@@ -1,48 +1,57 @@
 #include <Arduino_BHY2Host.h>
 
+// Create BSEC sensor instance
 SensorBSEC bsec(SENSOR_ID_BSEC);
 
 void setup() {
   Serial.begin(115200);
-  while(!Serial); // WAIT here until Serial Monitor is opened.
-
+  while (!Serial); // Wait for Serial Monitor
   Serial.println("DEBUG: Serial connected. Initializing BHY2 Host...");
 
-  // If connection fails, it might hang here.
-  if (BHY2Host.begin(false)) { // 'false' means don't wait forever
-      Serial.println("DEBUG: Nicla found and connected!");
+  if (BHY2Host.begin()) {
+    Serial.println("DEBUG: Nicla found and connected!");
   } else {
-      Serial.println("ERROR: Failed to find Nicla!");
-      while(1); // Stop here forever if failed
+    Serial.println("ERROR: Failed to find Nicla! Check black ESLOV cable.");
+    while (1);
   }
 
   Serial.println("DEBUG: Initializing BSEC sensor...");
   bsec.begin();
+
   Serial.println("DEBUG: BSEC started. Waiting for first data...");
   Serial.println("Timestamp(ms),Temperature(C),Humidity(%),CO2(ppm),IAQ,Accuracy");
 }
 
 void loop() {
+  // Continuously poll for new data from Nicla
   BHY2Host.update();
- 
+
   static unsigned long lastPrint = 0;
-  // Print every 1 second
   if (millis() - lastPrint >= 1000) {
     lastPrint = millis();
-   
-    // Only print if the sensor actually has valid data to send
-    // if (bsec.accuracy() >= 0) {
-        Serial.print(millis());
-        Serial.print(",");
-        Serial.print(bsec.comp_t());
-        Serial.print(",");
-        Serial.print(bsec.comp_h());
-        Serial.print(",");
-        Serial.print(bsec.co2_eq());
-        Serial.print(",");
-        Serial.print(bsec.iaq());
-        Serial.print(",");
-        Serial.println(bsec.accuracy());
-    // }
+
+    // Read values directly — may start as 0 until BSEC stabilizes
+    float temperature = bsec.comp_t();
+    float humidity = bsec.comp_h();
+    float co2 = bsec.co2_eq();
+    float iaq = bsec.iaq();
+    int accuracy = bsec.accuracy();
+
+    // Only print when something nonzero appears (valid data)
+    if (iaq > 0 || co2 > 0 || accuracy > 0) {
+      Serial.print(millis());
+      Serial.print(",");
+      Serial.print(temperature);
+      Serial.print(",");
+      Serial.print(humidity);
+      Serial.print(",");
+      Serial.print(co2);
+      Serial.print(",");
+      Serial.print(iaq);
+      Serial.print(",");
+      Serial.println(accuracy);
+    } else {
+      Serial.println("Waiting for valid BSEC data...");
+    }
   }
 }
