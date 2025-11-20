@@ -12,7 +12,7 @@ void setup() {
   if (BHY2Host.begin(false)) { // 'false' means don't wait forever
       Serial.println("DEBUG: Nicla found and connected!");
   } else {
-      Serial.println("ERROR: Failed to find Nicla! Check black ESLOV cable.");
+      Serial.println("ERROR: Failed to find Nicla!");
       while(1); // Stop here forever if failed
   }
 
