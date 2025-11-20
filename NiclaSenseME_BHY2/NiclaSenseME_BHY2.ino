@@ -18,6 +18,9 @@ void setup() {
   Serial.println("DEBUG: Initializing BSEC sensor...");
   bsec.begin();
 
+  Serial.println("DEBUG: Configuring BSEC virtual sensor for 1 Hz...");
+  bsec.configure(1.0, 0);
+
   Serial.println("DEBUG: BSEC started. Waiting for first data...");
   Serial.println("Timestamp(ms),Temperature(C),Humidity(%),CO2(ppm),IAQ,Accuracy");
 }
@@ -37,8 +40,6 @@ void loop() {
     float iaq = bsec.iaq();
     int accuracy = bsec.accuracy();
 
-    // Only print when something nonzero appears (valid data)
-    if (iaq > 0 || co2 > 0 || accuracy > 0) {
       Serial.print(millis());
       Serial.print(",");
       Serial.print(temperature);
@@ -50,8 +51,5 @@ void loop() {
       Serial.print(iaq);
       Serial.print(",");
       Serial.println(accuracy);
-    } else {
-      Serial.println("Waiting for valid BSEC data...");
     }
   }
-}
