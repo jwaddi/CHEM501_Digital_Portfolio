@@ -1,54 +1,36 @@
 # writing a main.py file, use of classes, writing the code for aquisition in a standalone filen
 
-
-
-# absolute work in progress. a lot is not working and it may have become overcomplicated
-
 import serial
 import serial.tools.list_ports
-import time
 
-dev = 'COM3'   # Note that the name of the port is a string
 
 # List the COM ports, and the devices that are connected to them
 ports = serial.tools.list_ports.comports()
 for n in ports:
     print(n.device, n.description)
 
-
+dev = 'COM6'   # Note that the name of the port is a string
 
 # Open the connection to your Arduino - see what happens when you vary baudrate and timeout
 mkr = serial.Serial(port=dev, baudrate=115200, timeout=1) 
 
 n_bits = 100   # Number of bits to read
 
-duration = 10 * 60
-end_time = time.time() + duration
-
-all_data = bytearray()
-
-while time.time() < end_time:
-    chunk = mkr.read(100)
-    if chunk:
-        all_data.extend(chunk) 
-
 # Clear the buffer for the Nicla serial port - you may find the lines below are essential to get things working
+
+while True: 
 # You may find you have to comment / uncomment them - you may find they do nothing at all!
-mkr.flush()
-mkr.reset_input_buffer()
-mkr.reset_output_buffer()
+# mkr.flush()
+# mkr.reset_input_buffer()
+# mkr.reset_output_buffer()
 
-    # data_stream = mkr.read(n_bits)    # Read n_bits bits of data
+    data_stream = mkr.read(n_bits)    # Read n_bits bits of data
 
-    # if data_stream:
-    #     all_data.extend(data_stream)
+    if data_stream: 
+        print(data_stream)
 
-mkr.close()    # Close the serial connection
+# mkr.close()    # Close the serial connection
 
-data = bytes(all_data)
-data
-
-
-
-
+# data = data_stream
+# data
 
