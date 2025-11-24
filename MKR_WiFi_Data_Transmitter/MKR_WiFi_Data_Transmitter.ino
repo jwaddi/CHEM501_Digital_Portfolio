@@ -1,3 +1,19 @@
+/*
+Project: THE STUFFY STUDY (CHEM501)
+Experiment: An Investigation into the Ventilation and Learning Environment in Student Study Spaces
+Device: Arduino MKR WiFi 1010 | Role: Main Controller (Host)
+Description:
+ Acts as the I2C Master to the Nicla Sense ME. 
+ Initialises the BSEC sensor fusion library (on the Nicla) and requests data 
+ (CO2, IAQ, VOCs, Temp, Humidity) at 1Hz.
+Hardware Requirements:
+ 1. SENSOR LINK: Must connect to Nicla Sense ME via black ESLOV cable (I2C).
+ 2. DATA LOGGING: Must remain connected to PC via USB (Serial @ 115200 baud).
+Authors: Josh and Kinga
+Date: November 2025
+License: MIT
+*/
+
 #include <Arduino_BHY2Host.h>
 
 // Create BSEC sensor instance
