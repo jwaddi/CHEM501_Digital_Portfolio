@@ -15,3 +15,5 @@ Followed by
 streamlit run "dashboard.py"
 
 This will take you to a localhost:8501 link where you can open your dashboard. 
+
+2. When downloaded, ensure the config.toml file is in a separate folder named '.steamlit' in the same directory as the dashboard. 
