@@ -180,11 +180,8 @@ if enable_comparison:
         st.pyplot(fig2)
        
 
-
-
-
 #
-# Generate a PDF report
+# Generate a PDF report (raw data, cleaned image, scaled, includes comparison graph and data summary)
 #
 st.subheader("Generate PDF Report") 
 mt.use("Agg") 
@@ -238,6 +235,33 @@ scaled_height = img_height * scale
 if scaled_height > 277: 
     pdf.add_page()
 pdf.image("temp_plot.png", x = 10, y = pdf.get_y() + 5, w = max_width, h = scaled_height)
+
+# Includes comparison chart if it exists 
+try: 
+    compare_variables
+    if len(compare_variables) > 0:
+        fig_comp, ax_comp = plt.subplots()
+        for var in compare_variables:
+            df = data_dict[var]
+            y_col2 = df.columns[1]
+            ax_comp.plot(df["Time (s)"], df[y_col2], label = var, marker = 'o', markersize = 3)
+        ax_comp.set_xlabel("Time (s)", weight = 'bold', size = 15)
+        ax_comp.set_ylabel("Values", weight = 'bold', size = 15)
+        ax_comp.legend()
+
+    # Save comparison graph 
+    fig_comp.savefig("comparison_plot.png", bbox_inches = 'tight')
+    plt.close(fig_comp)
+
+    # Add comparison chart to a new page
+    pdf.add_page()
+    im_comp = Image.open("comparison_plot.png")
+    img_width_comp, img_height_comp = im_comp.size
+    scale = max_width / img_width_comp
+    scaled_height_comp = img_height_comp * scale
+    pdf.image("comparison_plot.png", x = 10, y = pdf.get_y(), w = max_width, h = scaled_height_comp)
+except NameError:
+    pass            # if comparison mode was not used then skip
 
 # Export PDF to BytesIO for Streamlit download
 pdf_output = io.BytesIO()
