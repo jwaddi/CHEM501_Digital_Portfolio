@@ -130,4 +130,5 @@ if not row.empty:
 else:
     st.info("Selected time has no data point.")
 
+
 st.pyplot(fig)
