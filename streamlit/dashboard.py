@@ -2,6 +2,11 @@ import streamlit as st
 import pandas as pd 
 import numpy as np 
 import matplotlib.pyplot as plt
+from fpdf import FPDF
+import io
+import matplotlib as mt
+from PIL import Image
+
 
 st.title("Our project")
 
@@ -175,3 +180,73 @@ if enable_comparison:
         st.pyplot(fig2)
        
 
+
+
+
+#
+# Generate a PDF report
+#
+st.subheader("Generate PDF Report") 
+mt.use("Agg") 
+
+pdf = FPDF()
+pdf.add_page()
+pdf.set_font("Times", "B", 16) 
+pdf.cell(0, 10, f"{option} Report", ln = True, align = 'C')
+
+# Adding a table as text
+pdf.set_font("Times", "", 12)
+col = selected_data.columns[1]
+pdf.cell(0, 8, f"Time (s), {option}", ln = True)
+for i, row in selected_data.iterrows():
+    pdf.cell(0, 5, f"{row['Time (s)']}, {row[col]}", ln = True)
+
+# Add summary statistics 
+pdf.ln(5)
+pdf.set_font("Times", "B", 14)
+pdf.cell(0, 8, "Summary Statistics", ln = True)
+pdf.set_font("Times", "", 12)
+pdf.cell(0, 5, f"Mean: {selected_data[col].mean(): .2f}", ln = True)
+pdf.cell(0, 5, f"Max: {selected_data[col].max(): .2f}", ln = True)
+pdf.cell(0, 5, f"Min: {selected_data[col].min(): .2f}", ln = True)
+
+# Save a plain graph to image and add to PDF
+fig_pdf, ax_pdf = plt.subplots()
+
+if option == 'Overview':
+    for c in selected_data.columns[1:]:
+        ax_pdf.plot(selected_data["Time (s)"], selected_data[c], label = c)
+    ax_pdf.legend()
+else:
+    ax_pdf.plot(selected_data["Time (s)"], selected_data[col], marker = 'o', markersize = 3)
+
+ax_pdf.set_xlabel("Time (s)", weight = 'bold', size = 15)
+ax_pdf.set_ylabel("Values" if option == "Overview" else col, weight = 'bold', size = 15)
+
+# save chart as image
+fig_pdf.savefig("temp_plot.png", bbox_inches = 'tight')
+plt.close(fig_pdf)
+
+# Scale the image to fit the page width 
+im = Image.open("temp_plot.png")
+img_width, img_height = im.size 
+max_width = 190
+scale = max_width / img_width 
+scaled_height = img_height * scale
+
+# Add new page if image it too tall: 
+if scaled_height > 277: 
+    pdf.add_page()
+pdf.image("temp_plot.png", x = 10, y = pdf.get_y() + 5, w = max_width, h = scaled_height)
+
+# Export PDF to BytesIO for Streamlit download
+pdf_output = io.BytesIO()
+pdf.output(pdf_output)
+pdf_output.seek(0)
+
+st.sidebar.download_button(
+    label = "Download PDF Report",
+    data = pdf_output,
+    file_name = f"{option}_report.pdf",
+    mime = "application/pdf"
+)
