@@ -6,7 +6,10 @@ from fpdf import FPDF
 import io
 import matplotlib as mt
 from PIL import Image
+import time
 
+# need to figure this out (aka have data to upload)
+# uploaded_file = st.sidebar.file_uploader("Upload CSV dataset")
 
 st.title("Our project")
 
@@ -14,25 +17,25 @@ st.title("Our project")
 st.sidebar.header("Controls")
 option = st.sidebar.selectbox(
     "Select a variable",
-    ["Air Pressure", "BSEC Temperature", "CO2 Levels", "Humidity", "IAQ", "Temperature", "Overview"]
+    ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)", "Overview"]
 )
 
 st.write(f"Data for: {option}")
 
 data_dict = {
-    "Air Pressure": pd.DataFrame({
+    "Air Pressure (atm)": pd.DataFrame({
         "Time (s)": np.arange(100),
-        "Pressure (atm)": np.random.randint(20, 100, 100)
+        "Air Pressure (atm)": np.random.randint(20, 100, 100)
     }),
-    "BSEC Temperature": pd.DataFrame({
+    "BSEC Temperature (\u00b0 C)": pd.DataFrame({
         "Time (s)": np.arange(100),
         "Temp (\u00b0 C)": np.random.randint(20, 100, 100)
     }),
-    "CO2 Levels": pd.DataFrame({
+    "CO2 Levels (ppm)": pd.DataFrame({
         "Time (s)": np.arange(100),
         "CO2 (ppm)": np.random.randint(300, 600, 100)
     }),
-    "Humidity": pd.DataFrame({
+    "Humidity (%)": pd.DataFrame({
         "Time (s)": np.arange(100),
         "Humidity (%)": np.random.randint(20, 80, 100)
     }),
@@ -40,13 +43,13 @@ data_dict = {
         "Time (s)": np.arange(100),
         "IAQ": np.random.randint(0, 150, 100)
     }),
-    "Temperature": pd.DataFrame({
+    "Temperature (\u00b0 C)": pd.DataFrame({
         "Time (s)": np.arange(100),
         "Temp (\u00b0 C)": np.random.randint(20, 100, 100)
     }),
     "Overview": pd.DataFrame({
         "Time (s)": np.arange(100),
-        "Pressure (atm)": np.random.randint(20, 100, 100),
+        "Air Pressure (atm)": np.random.randint(20, 100, 100),
         "CO2 (ppm)": np.random.randint(300, 600, 100),
         "Humidity (%)": np.random.randint(20, 80, 100),
         "IAQ (AQI)": np.random.randint(0, 150, 100),
@@ -55,135 +58,134 @@ data_dict = {
 
 }
 
-# this will only show data for the selected value (single-variable)
-selected_data = data_dict[option] 
+selected_data = data_dict[option]
 y_col = selected_data.columns[1]
+#
+# Adding tabs
+#
 
-# we want to display the table 
-st.subheader(f"{option} Table")
-st.dataframe(selected_data)
+tab1, tab2, tab3 = st.tabs(["Table", "Chart", "Statistics"])
 
-# and to display a chart (single-variable)
-st.subheader(f"{option} over Time Chart")
-fig, ax = plt.subplots()
+with tab1: 
+    st.subheader(f"{option} Table")
+    st.dataframe(selected_data)
 
-# overview mode plots
-if option == 'Overview':
-    for col in selected_data.columns[1:]:
-        ax.plot(selected_data["Time (s)"], selected_data[col], label=col)
-    ax.legend()
-else:
-    ax.plot(selected_data["Time (s)"], selected_data[y_col], marker = 'o', markersize = 3)
+with tab2:
+    st.subheader(f"{option} over Time Chart")
+    fig, ax = plt.subplots()
 
-# adding axis labels
-if option == 'Overview': 
+    if option == "Overview":
+        for c in selected_data.columns[1:]:
+            ax.plot(selected_data["Time (s)"], selected_data[c], label = c)
+        ax.legend()
+    else: 
+        ax.plot(selected_data["Time (s)"], selected_data[y_col], marker = 'o', markersize = 3)
+    
     ax.set_xlabel("Time (s)", weight = 'bold', size = 15)
-    ax.set_ylabel("Values", weight = 'bold', size = 15)
-else: 
-    ax.set_xlabel("Time (s)", weight = 'bold', size = 15) 
-    ax.set_ylabel(y_col, weight = 'bold', size = 15)
-
+    ax.set_ylabel("Values" if option == "Overview" else y_col, weight = 'bold', size = 15)
 
 #
-# Dynmic threshold slider based on actual y range
+# Dynmic threshold slider based on actual y range (inside tab 2)
 #
-if option != 'Overview':                        # this will prevent the sliders from appearing when the vairable chosen is Overview
-    y_min = int(selected_data[y_col].min())
-    y_max = int(selected_data[y_col].max())
+    if option != 'Overview':                        # this will prevent the sliders from appearing when the vairable chosen is Overview
+        y_min = int(selected_data[y_col].min())
+        y_max = int(selected_data[y_col].max())
 
-    st.sidebar.subheader("Safety Threshold")
-    threshold = st.sidebar.slider(
-        f"Set {y_col} Safety Threshold", 
-        min_value = y_min, 
-        max_value = y_max,
-        value = y_min + (y_max - y_min) // 2,
-        step = 1
-)
+        st.sidebar.subheader("Safety Threshold")
+        threshold = st.sidebar.slider(
+            f"Set {y_col} Safety Threshold", 
+            min_value = y_min, 
+            max_value = y_max,
+            value = y_min + (y_max - y_min) // 2,
+            step = 1
+    )
 
-    # Draw a horizontal line for the threshold
-    ax.axhline(threshold, color = 'gray', linestyle = '--', linewidth = 1)
-
+        # Draw a horizontal line for the threshold
+        ax.axhline(threshold, color = 'gray', linestyle = '--', linewidth = 1)
 
 #
-# Time slider (x axis)
+# Time slider (x axis) (in tab 2)
 #
 
-    st.sidebar.subheader("Time Point Control")
-    time_point = st.sidebar.slider(
-        "Set a time point", 
-        min_value = int(selected_data["Time (s)"].min()), 
-        max_value = int(selected_data["Time (s)"].max()),
-        value = int(selected_data["Time (s)"].max() // 2),
-        step = 1
-)
+        st.sidebar.subheader("Time Point Control")
+        time_point = st.sidebar.slider(
+            "Set a time point", 
+            min_value = int(selected_data["Time (s)"].min()), 
+            max_value = int(selected_data["Time (s)"].max()),
+            value = int(selected_data["Time (s)"].max() // 2),
+            step = 1
+    )
 
-    # Draw a vertical line for the time point 
-    ax.axvline(time_point, color = 'blue', linestyle = '--', linewidth = 1)
+        # Draw a vertical line for the time point 
+        ax.axvline(time_point, color = 'blue', linestyle = '--', linewidth = 1)
 
-    # Get value at the selected time point
-    row = selected_data[selected_data["Time (s)"] == time_point]
-    if not row.empty:
-        value_at_time = row.iloc[0, 1]
+        # Get value at the selected time point
+        row = selected_data[selected_data["Time (s)"] == time_point]
+        if not row.empty:
+            value_at_time = row.iloc[0, 1]
 
-    # Safety classification based on the threshold at the time point
-        if value_at_time < threshold:
-            st.success(f"Value at t = {time_point}s: {value_at_time} (Good)")
-        elif value_at_time < (threshold + (0.25 * (y_max - y_min))):
-            st.warning(f"Value at t = {time_point}s: {value_at_time} (Moderate)")
+        # Safety classification based on the threshold at the time point
+            if value_at_time < threshold:
+                st.success(f"Value at t = {time_point}s: {value_at_time} (Good)")
+            elif value_at_time < (threshold + (0.25 * (y_max - y_min))):
+                st.warning(f"Value at t = {time_point}s: {value_at_time} (Moderate)")
+            else:
+                st.error(f"Value at t = {time_point}s: {value_at_time} (High)")
         else:
-            st.error(f"Value at t = {time_point}s: {value_at_time} (High)")
-    else:
-        st.info("Selected time has no data point.")
+            st.info("Selected time has no data point.")
 
 
-st.pyplot(fig)
+    st.pyplot(fig)
 
+    
+#
+# Optional Comparison Mode for Data (button on the side, displayed in graph tab)
+#
+    st.sidebar.subheader("Comparison Mode")
+    enable_comparison = st.sidebar.checkbox("Enable Comparison Mode")
+
+    compare_variables = [] 
+
+    if enable_comparison:
+        compare_variables = st.sidebar.multiselect(
+            "Select variables to compare", 
+            ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)", "Overview"],
+            default = [option]
+    )
+
+        if len(compare_variables) == 0: 
+            st.warning("Select at least one variable to display a comparison chart.")
+        elif 'Overview' in compare_variables:
+            st.warning("Overview cannot be compared with other variables. Please select other variables.")
+        else: 
+            st.subheader("Comparison Chart")
+            fig2, ax2 = plt.subplots()
+            for var in compare_variables:
+                df = data_dict[var]
+                y_col2 = df.columns[1]
+                ax2.plot(df["Time (s)"], df[y_col2], label = var, marker = 'o', markersize = 3)
+
+            ax2.set_xlabel("Time (s)", weight = 'bold', size = 15)
+            ax2.set_ylabel("Values", weight = 'bold', size = 15)
+            ax2.legend()
+            st.pyplot(fig2)
 
 #
 # Displaying summary statistics 
 #
-st.subheader(f"{option} Summary Statistics")
-col1, col2, col3 = st.columns(3)
-col1.metric("Mean", selected_data[y_col].mean())
-col2.metric("Max", selected_data[y_col].max())
-col3.metric("Min", selected_data[y_col].min())
+with tab3: 
 
+    st.subheader(f"{option} Summary Statistics")
+    col1, col2, col3, col4= st.columns(4)
+    col1.metric("Mean", selected_data[y_col].mean())
+    col2.metric("Max", selected_data[y_col].max())
+    col3.metric("Min", selected_data[y_col].min())
+    col4.metric("Std Dev", f"{selected_data[y_col].std():.3f}")
 
-#
-# Optional Comparison Mode for Data
-#
-st.sidebar.subheader("Comparison Mode")
-enable_comparison = st.sidebar.checkbox("Enable Comparison Mode")
-
-if enable_comparison:
-    compare_variables = st.sidebar.multiselect(
-    "Select variables to compare", 
-    ["Air Pressure", "BSEC Temperature", "CO2 Levels", "Humidity", "IAQ", "Temperature", "Overview"],
-    default = [option]
-)
-
-    if len(compare_variables) == 0: 
-        st.warning("Select at least one variable to display a comparison chart.")
-    elif 'Overview' in compare_variables:
-        st.warning("Overview cannot be compared with other variables. Please select other variables.")
-    else: 
-        st.subheader("Comparison Chart")
-        fig2, ax2 = plt.subplots()
-        for var in compare_variables:
-            df = data_dict[var]
-            y_col2 = df.columns[1]
-            ax2.plot(df["Time (s)"], df[y_col2], label = var, marker = 'o', markersize = 3)
-
-        ax2.set_xlabel("Time (s)", weight = 'bold', size = 15)
-        ax2.set_ylabel("Values", weight = 'bold', size = 15)
-        ax2.legend()
-        st.pyplot(fig2)
-       
 
 #
 # Generate a PDF report (raw data, cleaned image, scaled, includes comparison graph and data summary)
 #
-st.subheader("Generate PDF Report") 
 mt.use("Agg") 
 
 pdf = FPDF()
@@ -274,3 +276,68 @@ st.sidebar.download_button(
     file_name = f"{option}_report.pdf",
     mime = "application/pdf"
 )
+
+
+
+
+#
+# Live Tracking Widget
+#
+st. sidebar.subheader("Live Tracking")
+
+# Making containers for each variable
+live_containers = {
+    var: st.sidebar.empty() for var in ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)"]
+}
+
+#Initialise with the latest value from your dataset 
+for var, container in live_containers.items():
+    df = data_dict[var]
+    latest_value = df.iloc[-1, 1]
+    container.metric(label = f"{var}", value = f"{latest_value}")
+                     
+# from a live data source#
+from streamlit_autorefresh import st_autorefresh
+update_interval = 2             # seconds
+
+for _ in range(10):             # run 10 iterations to start with
+    for var, container in live_containers.items():
+        # Simulate new measurement
+        df = data_dict[var]
+        new_value = np.random.randint(df.iloc[-1, 1] - 5, df.iloc[-1, 1] + 5)
+        container.metric(label=f"{var}", value=f"{new_value}")
+st_autorefresh(interval=2000, limit=None, key="live_refresh_1")
+
+
+# colour coding the value based on thresholds
+thresholds = {
+    "CO2 Levels (ppm)": (600, 1200),
+    "IAQ": (50, 80),
+    "Air Pressure (atm)": (50, 80), 
+    "Humidity (%)": (30, 60),
+    "Temperature (\u00b0 C)": (20, 35),
+    "BSEC Temperature (\u00b0 C)": (20, 35)
+}
+
+for var, container in live_containers.items():
+    df = data_dict[var]
+    val = df.iloc[-1, 1]
+    low, high = thresholds.get(var, (0, 100))
+    
+    if val < low:
+        color = "#0B6623"  # green
+    elif val < high:
+        color = "#FFA500"  # orange
+    else:
+        color = "#FF0000"  # red
+    
+    # Use HTML to make number big and colored
+    container.markdown(
+        f"""
+        <div style="text-align:center;">
+            <div style="font-size:16px; font-weight:bold;">{var}</div>
+            <div style="font-size:36px; font-weight:bold; color:{color};">{val}</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
