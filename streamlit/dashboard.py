@@ -17,7 +17,7 @@ st.title("Our project")
 st.sidebar.header("Controls")
 option = st.sidebar.selectbox(
     "Select a variable",
-    ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)", "Overview"]
+    ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)", "Volatile Organic Compounds (ppm)", "Overview"]
 )
 
 st.write(f"Data for: {option}")
@@ -47,13 +47,18 @@ data_dict = {
         "Time (s)": np.arange(100),
         "Temp (\u00b0 C)": np.random.randint(20, 100, 100)
     }),
+    "Volatile Organic Compounds (ppm)": pd.DataFrame({
+        "Time (s)": np.arange(100),
+        "VOC (ppm)": np.random.randint(0, 10, 100)
+    }),
     "Overview": pd.DataFrame({
         "Time (s)": np.arange(100),
         "Air Pressure (atm)": np.random.randint(20, 100, 100),
         "CO2 (ppm)": np.random.randint(300, 600, 100),
         "Humidity (%)": np.random.randint(20, 80, 100),
         "IAQ (AQI)": np.random.randint(0, 150, 100),
-        "Temp (\u00b0 C)": np.random.randint(20, 100, 100)
+        "Temp (\u00b0 C)": np.random.randint(20, 100, 100),
+        "VOC (ppm)": np.random.randint(0, 10, 100)
     })
 
 }
@@ -93,7 +98,7 @@ with tab2:
 
         st.sidebar.subheader("Safety Threshold")
         threshold = st.sidebar.slider(
-            f"Set {y_col} Safety Threshold", 
+            f"{y_col} Safety Threshold", 
             min_value = y_min, 
             max_value = y_max,
             value = y_min + (y_max - y_min) // 2,
@@ -149,7 +154,7 @@ with tab2:
     if enable_comparison:
         compare_variables = st.sidebar.multiselect(
             "Select variables to compare", 
-            ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)", "Overview"],
+            ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)", "Volatile Organic Compounds (ppm)", "Overview"],
             default = [option]
     )
 
@@ -321,7 +326,7 @@ st. sidebar.subheader("Live Tracking")
 
 # Making containers for each variable
 live_containers = {
-    var: st.sidebar.empty() for var in ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)"]
+    var: st.sidebar.empty() for var in ["Air Pressure (atm)", "BSEC Temperature (\u00b0 C)", "CO2 Levels (ppm)", "Humidity (%)", "IAQ", "Temperature (\u00b0 C)", "Volatile Organic Compounds (ppm)"]
 }
 
 #Initialise with the latest value from your dataset 
@@ -349,7 +354,8 @@ thresholds = {
     "Air Pressure (atm)": (50, 80), 
     "Humidity (%)": (30, 60),
     "Temperature (\u00b0 C)": (20, 35),
-    "BSEC Temperature (\u00b0 C)": (20, 35)
+    "BSEC Temperature (\u00b0 C)": (20, 35),
+    "Volatile Organic Compounds (ppm)": (0, 5)
 }
 
 # IAQ thresholds corresponding to IAQ Reference Table
@@ -395,3 +401,4 @@ for var, container in live_containers.items():
         """,
         unsafe_allow_html=True
     )
+
