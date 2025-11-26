@@ -1,0 +1,115 @@
+import streamlit as st 
+import pandas as pd 
+import numpy as np 
+import matplotlib.pyplot as plt
+
+
+
+st.title("Our project")
+
+st.sidebar.header("Controls")
+option = st.sidebar.selectbox(
+    "Select a variable",
+    ["Air Pressure", "CO2 Levels", "Humidity", "IAQ", "Temperature", "Overview"]
+)
+
+st.write(f"You selected: {option}")
+
+data_dict = {
+    "Air Pressure": pd.DataFrame({
+        "Time (s)": np.arange(11),
+        "Pressure (atm)": np.random.randint(20, 100, 11)
+    }),
+    "CO2 Levels": pd.DataFrame({
+        "Time (s)": np.arange(11),
+        "CO2 (ppm)": np.random.randint(300, 600, 11)
+    }),
+    "Humidity": pd.DataFrame({
+        "Time (s)": np.arange(11),
+        "Humidity (%)": np.random.randint(20, 80, 11)
+    }),
+    "IAQ": pd.DataFrame({
+        "Time (s)": np.arange(11),
+        "IAQ": np.random.randint(0, 150, 11)
+    }),
+    "Temperature": pd.DataFrame({
+        "Time (s)": np.arange(11),
+        "Temp (\u00b0 C)": np.random.randint(20, 100, 11)
+    }),
+    "Overview": pd.DataFrame({
+        "Time (s)": np.arange(11),
+        "Pressure (atm)": np.random.randint(20, 100, 11),
+        "CO2 (ppm)": np.random.randint(300, 600, 11),
+        "Humidity (%)": np.random.randint(20, 80, 11),
+        "IAQ (AQI)": np.random.randint(0, 150, 11),
+        "Temp (\u00b0 C)": np.random.randint(20, 100, 11)
+    })
+
+}
+
+# this will only show data for the selected value 
+selected_data = data_dict[option] 
+
+# we want to display the table 
+st.subheader(f"{option} Table")
+st.dataframe(selected_data)
+
+# and to display a chart: 
+st.subheader(f"{option} over Time Chart")
+fig, ax = plt.subplots()
+
+# determine the y-axis column name from the second column of each table
+y_col = selected_data.columns[1]
+
+if option == 'Overview':
+    for col in selected_data.columns[1:]:
+        ax.plot(selected_data["Time (s)"], selected_data[col], label=col)
+        ax.legend()
+
+ax.plot(selected_data["Time (s)"], selected_data[y_col], marker = 'o', markersize = 3)
+
+
+# adding axis labels and title
+if option == 'Overview': 
+    ax.set_xlabel("Time (s)")
+    ax.set_ylabel("Values")
+else: 
+    ax.set_xlabel("Time (s)") 
+    ax.set_ylabel(y_col)
+
+st.pyplot(fig)
+
+
+# to give lines of different colour on one plot: 
+x = np.linspace(0, 1, 11)
+for i in range(1, 6):
+    plt.plot(x, i * x + i, label='$y = {i}x + {i}$'.format(i=i))
+plt.legend(loc='best')
+plt.show()
+
+
+
+
+
+
+# import pandas as pd
+# df = pd.DataFrame({'column 1': [1,2,3]})
+# df  # Draw the dataframe
+
+# x = 10
+# 'x = ', x  # Draw the string 'x' and then the value of x
+
+# # Also works with most supported chart types
+# import matplotlib.pyplot as plt
+# import numpy as np
+
+# arr = np.random.normal(1, 1, size=1000)
+# fig, ax = plt.subplots()
+# ax.hist(arr, bins=50)
+
+# fig  # Draw a Matplotlib chart
+
+
+# st.button("Click me")          # uses primaryColor
+# st.slider("Slide me", 0, 100)  # uses primaryColor for the knob and track
+# st.radio("Choose one", ["A", "B", "C"])  # uses primaryColor for selection
