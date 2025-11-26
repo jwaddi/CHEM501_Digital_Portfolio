@@ -13,3 +13,5 @@ You can do this by selecting 'Copy Relative Path' of the dashboard file and dele
 Followed by 
 
 streamlit run "dashboard.py"
+
+This will take you to a localhost:8501 link where you can open your dashboard. 
