@@ -10,7 +10,7 @@ st.title("Our project")
 st.sidebar.header("Controls")
 option = st.sidebar.selectbox(
     "Select a variable",
-    ["Air Pressure", "CO2 Levels", "Humidity", "IAQ", "Temperature", "Overview"]
+    ["Air Pressure", "BSEC Temperature", "CO2 Levels", "Humidity", "IAQ", "Temperature", "Overview"]
 )
 
 st.write(f"You selected: {option}")
@@ -19,6 +19,10 @@ data_dict = {
     "Air Pressure": pd.DataFrame({
         "Time (s)": np.arange(11),
         "Pressure (atm)": np.random.randint(20, 100, 11)
+    }),
+        "BSEC Temperature": pd.DataFrame({
+        "Time (s)": np.arange(11),
+        "Temp (\u00b0 C)": np.random.randint(20, 100, 11)
     }),
     "CO2 Levels": pd.DataFrame({
         "Time (s)": np.arange(11),
@@ -70,11 +74,11 @@ ax.plot(selected_data["Time (s)"], selected_data[y_col], marker = 'o', markersiz
 
 # adding axis labels and title
 if option == 'Overview': 
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Values")
+    ax.set_xlabel("Time (s)", weight = 'bold', size = 15)
+    ax.set_ylabel("Values", weight = 'bold', size = 15)
 else: 
-    ax.set_xlabel("Time (s)") 
-    ax.set_ylabel(y_col)
+    ax.set_xlabel("Time (s)", weight = 'bold', size = 15) 
+    ax.set_ylabel(y_col, weight = 'bold', size = 15)
 
 st.pyplot(fig)
 
