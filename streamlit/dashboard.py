@@ -131,4 +131,15 @@ else:
     st.info("Selected time has no data point.")
 
 
+
 st.pyplot(fig)
+
+
+#
+# Displaying summary statistics 
+#
+st.subheader(f"{option} Summary Statistics")
+col1, col2, col3 = st.columns(3)
+col1.metric("Mean", selected_data[y_col].mean())
+col2.metric("Max", selected_data[y_col].max())
+col3.metric("Min", selected_data[y_col].min())
