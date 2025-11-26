@@ -8,4 +8,4 @@ Dashboard:
 
 You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
 
-     run: cd 'Your path directory'
+     cd 'Your path directory'
