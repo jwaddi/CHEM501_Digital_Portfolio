@@ -64,7 +64,7 @@ y_col = selected_data.columns[1]
 # Adding tabs
 #
 
-tab1, tab2, tab3 = st.tabs(["Table", "Chart", "Statistics"])
+tab1, tab2, tab3, tab4 = st.tabs(["Table", "Chart", "Statistics", "Literature Values"])
 
 with tab1: 
     st.subheader(f"{option} Table")
@@ -182,6 +182,40 @@ with tab3:
     col3.metric("Min", selected_data[y_col].min())
     col4.metric("Std Dev", f"{selected_data[y_col].std():.3f}")
 
+
+with tab4:
+    st.subheader("IAQ Reference Table")
+    IAQ_table = pd.DataFrame({
+        "IAQ Index": ["0-50", "51-100", "101-150", "151-200", "201-250", "251-300", "301+"],
+        "Air Quality": ["Excellent", "Good", "Lightly Polluted", "Moderately Polluted", "Heavily Polluted", "Severely Polluted", "Extremely Polluted"],
+        "Impact": ["Pure air; healthy", "No irritation or impact on well-being", "Reduction of well-being possible", "More siginificant irritation possible", 
+                   "Exposure might lead to effects like headac he depending on type of VOCs", "More sever health issues possible if harmful VOC present", "Headaches, additional neurotoxic effects possible"],
+        "Suggested Action": ["No action required", "No action required", "Ventilation suggested", "Increase ventilation with clean air", "Optimize ventilation", 
+                             "Contamination should be identified if level is reached even without presence of people; maximize ventilation", "Contamination needs to be identified; avoid presence in room and maximize ventilation"]
+                            
+
+    })
+
+    # Defining different colours for each row
+    row_colors = [
+        "#66FF00",  # bright green
+        "#61E160",  # green
+        "#FFFF00",  # yellow
+        "#FFA500",  # orange
+        "#FF0000",  # red
+        "#800080",  # purple
+        "#A52A2A"   # brown
+    ]
+
+    def highlight_rows(row):
+        idx = row.name
+        return [f"background-color: {row_colors[idx]}; color: black;"] * len(row)
+
+    styled = IAQ_table.style.apply(highlight_rows, axis=1)
+
+    st.dataframe(styled, use_container_width=True)
+
+    st.write("Source: https://www.sorel.de/en/indoor-air-quality-index-in-hvac-applications/, (accessed November 2025)")
 
 #
 # Generate a PDF report (raw data, cleaned image, scaled, includes comparison graph and data summary)
@@ -312,26 +346,46 @@ st_autorefresh(interval=2000, limit=None, key="live_refresh_1")
 # colour coding the value based on thresholds
 thresholds = {
     "CO2 Levels (ppm)": (600, 1200),
-    "IAQ": (50, 80),
     "Air Pressure (atm)": (50, 80), 
     "Humidity (%)": (30, 60),
     "Temperature (\u00b0 C)": (20, 35),
     "BSEC Temperature (\u00b0 C)": (20, 35)
 }
 
+# IAQ thresholds corresponding to IAQ Reference Table
+iaq_thresholds =  (50, 100, 150, 200, 250, 300, 1000)
+
 for var, container in live_containers.items():
     df = data_dict[var]
     val = df.iloc[-1, 1]
-    low, high = thresholds.get(var, (0, 100))
-    
-    if val < low:
-        color = "#0B6623"  # green
-    elif val < high:
-        color = "#FFA500"  # orange
-    else:
-        color = "#FF0000"  # red
-    
-    # Use HTML to make number big and colored
+
+    if var == "IAQ":
+        match val: 
+            case v if v <= iaq_thresholds[0]:
+                color = "#66FF00"  # bright green
+            case v if v <= iaq_thresholds[1]:
+                color = "#61E160"  # green
+            case v if v <= iaq_thresholds[2]: 
+                color = "#FFFF00"  # yellow
+            case v if v <= iaq_thresholds[3]: 
+                color = "#FFA500" # orange
+            case v if v <= iaq_thresholds[4]: 
+                color = "#FF0000" # red
+            case v if v <= iaq_thresholds[5]: 
+                color = "#800080" # purple#
+            case _:
+                color = "#A52A2A"   # brown
+
+    else:   
+        low, high = thresholds.get(var, (0, 100))         
+        if val < low:
+            color = "#61E160"  # green
+        elif val < high:
+            color = "#FFA500"  # orange
+        else:
+            color = "#FF0000"  # red
+
+  # Use HTML to make number big and colored
     container.markdown(
         f"""
         <div style="text-align:center;">
