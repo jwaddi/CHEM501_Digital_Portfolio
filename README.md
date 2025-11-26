@@ -1,1 +1,8 @@
 # CHEM501_Digital_Portfolio
+
+
+
+Dashboard: 
+1. Ensure you are running your dashboard code in the correct file directory
+You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
+      run: cd 'Your path directory'
