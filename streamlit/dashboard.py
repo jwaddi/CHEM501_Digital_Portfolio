@@ -12,7 +12,7 @@ option = st.sidebar.selectbox(
     ["Air Pressure", "BSEC Temperature", "CO2 Levels", "Humidity", "IAQ", "Temperature", "Overview"]
 )
 
-st.write(f"You selected: {option}")
+st.write(f"Data for: {option}")
 
 data_dict = {
     "Air Pressure": pd.DataFrame({
@@ -50,7 +50,7 @@ data_dict = {
 
 }
 
-# this will only show data for the selected value 
+# this will only show data for the selected value (single-variable)
 selected_data = data_dict[option] 
 y_col = selected_data.columns[1]
 
@@ -58,7 +58,7 @@ y_col = selected_data.columns[1]
 st.subheader(f"{option} Table")
 st.dataframe(selected_data)
 
-# and to display a chart: 
+# and to display a chart (single-variable)
 st.subheader(f"{option} over Time Chart")
 fig, ax = plt.subplots()
 
@@ -82,54 +82,53 @@ else:
 #
 # Dynmic threshold slider based on actual y range
 #
-y_min = int(selected_data[y_col].min())
-y_max = int(selected_data[y_col].max())
+if option != 'Overview':                        # this will prevent the sliders from appearing when the vairable chosen is Overview
+    y_min = int(selected_data[y_col].min())
+    y_max = int(selected_data[y_col].max())
 
-st.sidebar.subheader("Safety Threshold")
-threshold = st.sidebar.slider(
-    f"Set {y_col} Safety Threshold", 
-    min_value = y_min, 
-    max_value = y_max,
-    value = y_min + (y_max - y_min) // 2,
-    step = 1
+    st.sidebar.subheader("Safety Threshold")
+    threshold = st.sidebar.slider(
+        f"Set {y_col} Safety Threshold", 
+        min_value = y_min, 
+        max_value = y_max,
+        value = y_min + (y_max - y_min) // 2,
+        step = 1
 )
 
-# Draw a horizontal line for the threshold
-ax.axhline(threshold, color = 'gray', linestyle = '--', linewidth = 1)
+    # Draw a horizontal line for the threshold
+    ax.axhline(threshold, color = 'gray', linestyle = '--', linewidth = 1)
 
 
 #
 # Time slider (x axis)
 #
 
-st.sidebar.subheader("Time Point Control")
-time_point = st.sidebar.slider(
-    "Set a time point", 
-    min_value = int(selected_data["Time (s)"].min()), 
-    max_value = int(selected_data["Time (s)"].max()),
-    value = int(selected_data["Time (s)"].max() // 2),
-    step = 1
+    st.sidebar.subheader("Time Point Control")
+    time_point = st.sidebar.slider(
+        "Set a time point", 
+        min_value = int(selected_data["Time (s)"].min()), 
+        max_value = int(selected_data["Time (s)"].max()),
+        value = int(selected_data["Time (s)"].max() // 2),
+        step = 1
 )
 
-# Draw a vertical line for the time point 
-ax.axvline(time_point, color = 'blue', linestyle = '--', linewidth = 1)
+    # Draw a vertical line for the time point 
+    ax.axvline(time_point, color = 'blue', linestyle = '--', linewidth = 1)
 
-# Get value at the selected time point
-row = selected_data[selected_data["Time (s)"] == time_point]
-if not row.empty:
-    value_at_time = row.iloc[0, 1]
+    # Get value at the selected time point
+    row = selected_data[selected_data["Time (s)"] == time_point]
+    if not row.empty:
+        value_at_time = row.iloc[0, 1]
 
-# Safety classification based on the threshold at the time point
-
-    if value_at_time < threshold:
-        st.success(f"Value at t = {time_point}s: {value_at_time} (Good)")
-    elif value_at_time < (threshold + (0.25 * (y_max - y_min))):
-        st.warning(f"Value at t = {time_point}s: {value_at_time} (Moderate)")
+    # Safety classification based on the threshold at the time point
+        if value_at_time < threshold:
+            st.success(f"Value at t = {time_point}s: {value_at_time} (Good)")
+        elif value_at_time < (threshold + (0.25 * (y_max - y_min))):
+            st.warning(f"Value at t = {time_point}s: {value_at_time} (Moderate)")
+        else:
+            st.error(f"Value at t = {time_point}s: {value_at_time} (High)")
     else:
-        st.error(f"Value at t = {time_point}s: {value_at_time} (High)")
-else:
-    st.info("Selected time has no data point.")
-
+        st.info("Selected time has no data point.")
 
 
 st.pyplot(fig)
@@ -143,3 +142,36 @@ col1, col2, col3 = st.columns(3)
 col1.metric("Mean", selected_data[y_col].mean())
 col2.metric("Max", selected_data[y_col].max())
 col3.metric("Min", selected_data[y_col].min())
+
+
+#
+# Optional Comparison Mode for Data
+#
+st.sidebar.subheader("Comparison Mode")
+enable_comparison = st.sidebar.checkbox("Enable Comparison Mode")
+
+if enable_comparison:
+    compare_variables = st.sidebar.multiselect(
+    "Select variables to compare", 
+    ["Air Pressure", "BSEC Temperature", "CO2 Levels", "Humidity", "IAQ", "Temperature", "Overview"],
+    default = [option]
+)
+
+    if len(compare_variables) == 0: 
+        st.warning("Select at least one variable to display a comparison chart.")
+    elif 'Overview' in compare_variables:
+        st.warning("Overview cannot be compared with other variables. Please select other variables.")
+    else: 
+        st.subheader("Comparison Chart")
+        fig2, ax2 = plt.subplots()
+        for var in compare_variables:
+            df = data_dict[var]
+            y_col2 = df.columns[1]
+            ax2.plot(df["Time (s)"], df[y_col2], label = var, marker = 'o', markersize = 3)
+
+        ax2.set_xlabel("Time (s)", weight = 'bold', size = 15)
+        ax2.set_ylabel("Values", weight = 'bold', size = 15)
+        ax2.legend()
+        st.pyplot(fig2)
+       
+
