@@ -8,11 +8,110 @@ import matplotlib as mt
 from PIL import Image
 import time
 from scipy.signal import savgol_filter
+import json
 
 # need to figure this out (aka have data to upload)
 # uploaded_file = st.sidebar.file_uploader("Upload CSV dataset")
 
-st.title("Our project")
+#define class named project title and apply it to your title element
+st.markdown('<h1 class="project-title">The Stuffy Study Pod: An Investigation into the Ventilation and Learning Environment in Student Study Spaces</h1>', unsafe_allow_html=True)
+
+# Inject custom CSS to style the title
+st.markdown(
+    """
+    <style>
+    .project-title {
+        color: #E7E8CB;
+        font-size: 2.5em;
+        font-weight: bold;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+#
+# Theme toggle
+#
+theme_choice = st.sidebar.radio("Theme", ["Light", "Dark"], index=0)
+
+def apply_theme(theme):
+    if theme == "Dark":
+        # matplotlib dark style like dark_background but minimal manual settings
+        mt.rcParams.update({
+            "axes.facecolor": "#222222",
+            "figure.facecolor": "#222222",
+            "savefig.facecolor": "#222222",
+            "axes.edgecolor": "#E7E8CB",
+            "axes.labelcolor": "#E7E8CB",
+            "xtick.color": "#E7E8CB",
+            "ytick.color": "#E7E8CB",
+            "text.color": "#E7E8CB",
+            "legend.facecolor": "#333333",
+            "grid.color": "#444444"
+        })
+        # streamlit CSS for dark theme
+        st.markdown(
+            """
+            <style>
+            .stApp { background-color: #111111; color: #EEE; }
+            .stSidebar { background-color: #121212; color: #EEE; }
+            .css-1d391kg { background-color: #121212; } /* input bg - may vary by Streamlit version */
+            </style>
+            """, unsafe_allow_html=True
+        )
+    else:
+        # revert to light
+        mt.rcParams.update({
+            "axes.facecolor": "white",
+            "figure.facecolor": "white",
+            "savefig.facecolor": "white",
+            "axes.edgecolor": "black",
+            "axes.labelcolor": "black",
+            "xtick.color": "black",
+            "ytick.color": "black",
+            "text.color": "black",
+            "legend.facecolor": "#FFFFFF",
+            "grid.color": "#DDDDDD"
+        })
+
+       # full CSS reset to override .toml dark theme
+        st.markdown(
+            """
+            <style>
+            /* Reset global colors that .toml applies */
+            html, body, .stApp, [class^="st-"], [class*=" st-"] {
+                background-color: white !important;
+                color: black !important;
+            }
+
+            /* Sidebar */
+            .stSidebar {
+                background-color: #F8F8F8 !important;
+                color: black !important;
+            }
+
+            /* Inputs */
+            input, textarea, select, button,
+            .stTextInput input, .stNumberInput input,
+            .stTextArea textarea {
+                background-color: white !important;
+                color: black !important;
+            }
+
+            /* Optional recovery for dark-mode widget classes */
+            .css-1d391kg {
+                background-color: white !important;
+                color: black !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+# Apply chosen theme
+apply_theme(theme_choice)
+
 
 #sidebar for choice of variable displayed 
 st.sidebar.header("Controls")
@@ -82,7 +181,7 @@ y_col = selected_data.columns[1]
 # Adding tabs
 #
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Table", "Chart", "Statistics", "Literature Values", "Data Cleaning"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Table", "Chart", "Statistics", "Literature Values", "Data Cleaning", "Download data"])
 
 with tab1: 
     st.subheader(f"{option} Table")
@@ -111,11 +210,12 @@ with tab2:
         # check for anomalies 
         if option in thresholds:
             low, high = thresholds[option]
-            if val < low or val > high: 
-                ax.plot(time, val, 'ro', markersize = 8, color = 'red')  # red circle for anomaly
+            if val < low or val > high:
+                ax.plot(time, val, marker='o', markersize=8, linestyle='None', color='#9D00FF')
             elif option == "IAQ":
                 if val > iaq_thresholds[-1]:
-                    ax.plot(time, val, 'ro', markersize = 8, color = 'red')
+                    ax.plot(time, val, marker='o', markersize=8, linestyle='None', color='#9D00FF')
+
 
     #
     #
@@ -306,103 +406,135 @@ with tab5:
 
     st.success("Data cleaning complete! Adjust the sliders and toggles to see the effect.")
 
-
+with tab6:
+    st.subheader("Download Data")
 #
 # Generate a PDF report (raw data, cleaned image, scaled, includes comparison graph and data summary)
 #
-mt.use("Agg") 
+    mt.use("Agg") 
 
-pdf = FPDF()
-pdf.add_page()
-pdf.set_font("Times", "B", 16) 
-pdf.cell(0, 10, f"{option} Report", ln = True, align = 'C')
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Times", "B", 16) 
+    pdf.cell(0, 10, f"{option} Report", ln = True, align = 'C')
 
 # Adding a table as text
-pdf.set_font("Times", "", 12)
-col = selected_data.columns[1]
-pdf.cell(0, 8, f"Time (s), {option}", ln = True)
-for i, row in selected_data.iterrows():
-    pdf.cell(0, 5, f"{row['Time (s)']}, {row[col]}", ln = True)
+    pdf.set_font("Times", "", 12)
+    col = selected_data.columns[1]
+    pdf.cell(0, 8, f"Time (s), {option}", ln = True)
+    for i, row in selected_data.iterrows():
+        pdf.cell(0, 5, f"{row['Time (s)']}, {row[col]}", ln = True)
 
 # Add summary statistics 
-pdf.ln(5)
-pdf.set_font("Times", "B", 14)
-pdf.cell(0, 8, "Summary Statistics", ln = True)
-pdf.set_font("Times", "", 12)
-pdf.cell(0, 5, f"Mean: {selected_data[col].mean(): .2f}", ln = True)
-pdf.cell(0, 5, f"Max: {selected_data[col].max(): .2f}", ln = True)
-pdf.cell(0, 5, f"Min: {selected_data[col].min(): .2f}", ln = True)
+    pdf.ln(5)
+    pdf.set_font("Times", "B", 14)
+    pdf.cell(0, 8, "Summary Statistics", ln = True)
+    pdf.set_font("Times", "", 12)
+    pdf.cell(0, 5, f"Mean: {selected_data[col].mean(): .2f}", ln = True)
+    pdf.cell(0, 5, f"Max: {selected_data[col].max(): .2f}", ln = True)
+    pdf.cell(0, 5, f"Min: {selected_data[col].min(): .2f}", ln = True)
 
 # Save a plain graph to image and add to PDF
-fig_pdf, ax_pdf = plt.subplots()
+    fig_pdf, ax_pdf = plt.subplots()
 
-if option == 'Overview':
-    for c in selected_data.columns[1:]:
-        ax_pdf.plot(selected_data["Time (s)"], selected_data[c], label = c)
-    ax_pdf.legend()
-else:
-    ax_pdf.plot(selected_data["Time (s)"], selected_data[col], marker = 'o', markersize = 3)
+    if option == 'Overview':
+        for c in selected_data.columns[1:]:
+            ax_pdf.plot(selected_data["Time (s)"], selected_data[c], label = c)
+        ax_pdf.legend()
+    else:
+        ax_pdf.plot(selected_data["Time (s)"], selected_data[col], marker = 'o', markersize = 3)
 
-ax_pdf.set_xlabel("Time (s)", weight = 'bold', size = 15)
-ax_pdf.set_ylabel("Values" if option == "Overview" else col, weight = 'bold', size = 15)
+    ax_pdf.set_xlabel("Time (s)", weight = 'bold', size = 15)
+    ax_pdf.set_ylabel("Values" if option == "Overview" else col, weight = 'bold', size = 15)
 
 # save chart as image
-fig_pdf.savefig("temp_plot.png", bbox_inches = 'tight')
-plt.close(fig_pdf)
+    fig_pdf.savefig("temp_plot.png", bbox_inches = 'tight')
+    plt.close(fig_pdf)
 
 # Scale the image to fit the page width 
-im = Image.open("temp_plot.png")
-img_width, img_height = im.size 
-max_width = 190
-scale = max_width / img_width 
-scaled_height = img_height * scale
+    im = Image.open("temp_plot.png")
+    img_width, img_height = im.size 
+    max_width = 190
+    scale = max_width / img_width 
+    scaled_height = img_height * scale
 
 # Add new page if image it too tall: 
-if scaled_height > 277: 
-    pdf.add_page()
-pdf.image("temp_plot.png", x = 10, y = pdf.get_y() + 5, w = max_width, h = scaled_height)
+    if scaled_height > 277: 
+        pdf.add_page()
+    pdf.image("temp_plot.png", x = 10, y = pdf.get_y() + 5, w = max_width, h = scaled_height)
 
 # Includes comparison chart if it exists 
-try: 
-    compare_variables
-    if len(compare_variables) > 0:
-        fig_comp, ax_comp = plt.subplots()
-        for var in compare_variables:
-            df = data_dict[var]
-            y_col2 = df.columns[1]
-            ax_comp.plot(df["Time (s)"], df[y_col2], label = var, marker = 'o', markersize = 3)
-        ax_comp.set_xlabel("Time (s)", weight = 'bold', size = 15)
-        ax_comp.set_ylabel("Values", weight = 'bold', size = 15)
-        ax_comp.legend()
+    try: 
+        compare_variables
+        if len(compare_variables) > 0:
+            fig_comp, ax_comp = plt.subplots()
+            for var in compare_variables:
+                df = data_dict[var]
+                y_col2 = df.columns[1]
+                ax_comp.plot(df["Time (s)"], df[y_col2], label = var, marker = 'o', markersize = 3)
+            ax_comp.set_xlabel("Time (s)", weight = 'bold', size = 15)
+            ax_comp.set_ylabel("Values", weight = 'bold', size = 15)
+            ax_comp.legend()
 
     # Save comparison graph 
-    fig_comp.savefig("comparison_plot.png", bbox_inches = 'tight')
-    plt.close(fig_comp)
+        fig_comp.savefig("comparison_plot.png", bbox_inches = 'tight')
+        plt.close(fig_comp)
 
     # Add comparison chart to a new page
-    pdf.add_page()
-    im_comp = Image.open("comparison_plot.png")
-    img_width_comp, img_height_comp = im_comp.size
-    scale = max_width / img_width_comp
-    scaled_height_comp = img_height_comp * scale
-    pdf.image("comparison_plot.png", x = 10, y = pdf.get_y(), w = max_width, h = scaled_height_comp)
-except NameError:
-    pass            # if comparison mode was not used then skip
+        pdf.add_page()
+        im_comp = Image.open("comparison_plot.png")
+        img_width_comp, img_height_comp = im_comp.size
+        scale = max_width / img_width_comp
+        scaled_height_comp = img_height_comp * scale
+        pdf.image("comparison_plot.png", x = 10, y = pdf.get_y(), w = max_width, h = scaled_height_comp)
+    except NameError:
+        pass            # if comparison mode was not used then skip
 
 # Export PDF to BytesIO for Streamlit download
-pdf_output = io.BytesIO()
-pdf.output(pdf_output)
-pdf_output.seek(0)
+    pdf_output = io.BytesIO()
+    pdf.output(pdf_output)
+    pdf_output.seek(0)
 
-st.sidebar.download_button(
-    label = "Download PDF Report",
-    data = pdf_output,
-    file_name = f"{option}_report.pdf",
-    mime = "application/pdf"
-)
+    st.sidebar.download_button(
+        label = "Download PDF Report",
+        data = pdf_output,
+        file_name = f"{option}_report.pdf",
+        mime = "application/pdf"
+    )
 
+#
+# Downloading CSV, Excel and JSON
+#
+# CSV
+    csv_data = df_clean.to_csv(index = False).encode("utf-8")
+    st.download_button(
+        label = "Download Data in CSV Format",
+        data=csv_data,
+        file_name = f"{option}_cleaned.csv",
+        mime="text/csv"
+    )
 
+# Excel
+    excel_buffer = io.BytesIO()
+    with pd.ExcelWriter(excel_buffer, engine="openpyxl") as writer:
+        df_clean.to_excel(writer, index = False)
+    excel_buffer.seek(0)
 
+    st.download_button(
+        label = "Download Data in Excel Format",
+        data = excel_buffer,
+        file_name = f"{option}_cleaned.xlsx",
+        mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+ 
+# JSON
+    json_data = df_clean.to_json(orient = "records")
+    st.download_button(
+        label = "Download Data in JSON Format",
+        data = json_data,
+        file_name = f"{option}_cleaned.json",
+        mime = "application/json"
+    )
 
 #
 # Live Tracking Widget
@@ -498,5 +630,5 @@ for var, container in live_containers.items():
         </div>
         {anomaly_flag}
         """, 
-        unsafe_allow_html=True
+        unsafe_allow_html = True
     )
