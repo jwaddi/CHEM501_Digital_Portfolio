@@ -7,6 +7,7 @@ import io
 import matplotlib as mt
 from PIL import Image
 import time
+from scipy.signal import savgol_filter
 
 # need to figure this out (aka have data to upload)
 # uploaded_file = st.sidebar.file_uploader("Upload CSV dataset")
@@ -60,8 +61,20 @@ data_dict = {
         "Temp (\u00b0 C)": np.random.randint(20, 100, 100),
         "VOC (ppm)": np.random.randint(0, 10, 100)
     })
-
 }
+
+# Thresholds for normal variables
+thresholds = {
+    "CO2 Levels (ppm)": (600, 1200),
+    "Air Pressure (atm)": (50, 80), 
+    "Humidity (%)": (30, 60),
+    "Temperature (\u00b0 C)": (20, 35),
+    "BSEC Temperature (\u00b0 C)": (20, 35),
+    "Volatile Organic Compounds (ppm)": (0, 5)
+}
+
+# IAQ thresholds corresponding to IAQ Reference Table
+iaq_thresholds =  (50, 100, 150, 200, 250, 300, 1000)
 
 selected_data = data_dict[option]
 y_col = selected_data.columns[1]
@@ -69,7 +82,7 @@ y_col = selected_data.columns[1]
 # Adding tabs
 #
 
-tab1, tab2, tab3, tab4 = st.tabs(["Table", "Chart", "Statistics", "Literature Values"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Table", "Chart", "Statistics", "Literature Values", "Data Cleaning"])
 
 with tab1: 
     st.subheader(f"{option} Table")
@@ -86,6 +99,30 @@ with tab2:
     else: 
         ax.plot(selected_data["Time (s)"], selected_data[y_col], marker = 'o', markersize = 3)
     
+
+    #
+    # Anomaly detection on graph
+    #
+
+    for i, row in selected_data.iterrows():
+        val = row[y_col]
+        time = row["Time (s)"]
+        
+        # check for anomalies 
+        if option in thresholds:
+            low, high = thresholds[option]
+            if val < low or val > high: 
+                ax.plot(time, val, 'ro', markersize = 8, color = 'red')  # red circle for anomaly
+            elif option == "IAQ":
+                if val > iaq_thresholds[-1]:
+                    ax.plot(time, val, 'ro', markersize = 8, color = 'red')
+
+    #
+    #
+    #
+
+
+    # labels formatting 
     ax.set_xlabel("Time (s)", weight = 'bold', size = 15)
     ax.set_ylabel("Values" if option == "Overview" else y_col, weight = 'bold', size = 15)
 
@@ -222,6 +259,54 @@ with tab4:
 
     st.write("Source: https://www.sorel.de/en/indoor-air-quality-index-in-hvac-applications/, (accessed November 2025)")
 
+    st.write("Sources for VOC and CO2 and Temp")
+
+#
+# Interactive Data CLeaning Tools
+#
+with tab5:
+    st.subheader("Data Cleaning Options")
+
+    # Select a variable to clean
+    var = st.selectbox("Select variable to clean", [v for v in data_dict.keys() if v != "Overview"])
+    df = data_dict[var].copy()
+    y_col2 = df.columns[1]
+
+    #outlier removal toggle
+    remove_outliers = st.checkbox("Remove Outliers")
+    if remove_outliers: 
+        z_scores = (df[y_col2] - df[y_col2].mean()) / df[y_col2].std()
+        df_clean = df[np.abs(z_scores) < 3]
+    else: 
+        df_clean = df.copy()
+
+    # smoothing graphs 
+    st.subheader("Smoothing Filter")
+    smoothing_method = st.selectbox("Select method", ["None", "Moving Average", "Savitzky-Golay"])
+
+    window_size = st.slider("Window size / polynomial order", min_value = 3, max_value = 21, step = 2, value = 5)
+
+    if smoothing_method == "Moving Average":
+        df_clean[y_col2] = df_clean[y_col2].rolling(window=window_size, center=True, min_periods=1).mean()
+    elif smoothing_method == "Savitzky-Golay":
+        if len(df_clean[y_col2]) >= window_size:
+            df_clean[y_col2] = savgol_filter(df_clean[y_col2], window_length = window_size, polyorder = 2)
+        else: 
+            st.warning("Window size is too large for Savitzky-Golay filter, skipping.")
+
+    # Plot raw vs cleaned data
+    st.subheader("Raw against Cleaned Data Plot")
+    fig, ax = plt.subplots(figsize = (10, 5))
+    ax.plot(df["Time (s)"], df[y_col2], label="Raw", marker='o', markersize=3)
+    ax.plot(df_clean["Time (s)"], df_clean[y_col2], label="Cleaned", marker='o', markersize=3)
+    ax.set_xlabel("Time (s)")
+    ax.set_ylabel(y_col2)
+    ax.legend(loc = "upper left", bbox_to_anchor = (1, 1))
+    st.pyplot(fig)
+
+    st.success("Data cleaning complete! Adjust the sliders and toggles to see the effect.")
+
+
 #
 # Generate a PDF report (raw data, cleaned image, scaled, includes comparison graph and data summary)
 #
@@ -348,23 +433,31 @@ for _ in range(10):             # run 10 iterations to start with
 st_autorefresh(interval=2000, limit=None, key="live_refresh_1")
 
 
-# colour coding the value based on thresholds
-thresholds = {
-    "CO2 Levels (ppm)": (600, 1200),
-    "Air Pressure (atm)": (50, 80), 
-    "Humidity (%)": (30, 60),
-    "Temperature (\u00b0 C)": (20, 35),
-    "BSEC Temperature (\u00b0 C)": (20, 35),
-    "Volatile Organic Compounds (ppm)": (0, 5)
-}
+# colour coding the value based on thresholds defined earlier
+# IAQ thresholds corresponding to IAQ Reference Table defined earlier
 
-# IAQ thresholds corresponding to IAQ Reference Table
-iaq_thresholds =  (50, 100, 150, 200, 250, 300, 1000)
 
+#
+# Real time amnomaly detection
+#
+def is_anomaly(var, val):
+    if var in thresholds:
+        low, high = thresholds[var]
+        return val < low or val > high
+    if var == "IAQ":
+        return val > iaq_thresholds[-1]
+    return False
+
+#
+#
+#
+
+# loop through live containers to update with colour coding
 for var, container in live_containers.items():
     df = data_dict[var]
     val = df.iloc[-1, 1]
 
+# determine color based on thresholds
     if var == "IAQ":
         match val: 
             case v if v <= iaq_thresholds[0]:
@@ -391,14 +484,20 @@ for var, container in live_containers.items():
         else:
             color = "#FF0000"  # red
 
-  # Use HTML to make number big and colored
+    # compute anomaly
+    anomaly = is_anomaly(var, val)
+    anomaly_flag = "<div style='color:red; font-size:14px;'>Anomaly detected</div>" if anomaly else ""
+   
+
+  # Use HTML to make number big and colored + anomaly detection
     container.markdown(
         f"""
         <div style="text-align:center;">
             <div style="font-size:16px; font-weight:bold;">{var}</div>
             <div style="font-size:36px; font-weight:bold; color:{color};">{val}</div>
         </div>
-        """,
+        {anomaly_flag}
+        """, 
         unsafe_allow_html=True
     )
 
