@@ -1,3 +1,8 @@
+""" 
+This script will combine all individual files and modules into a working dashboard, performing the same function as the dashboard.py file in this folder. 
+
+"""
+
 import streamlit as st
 
 # import modules
