@@ -1,3 +1,23 @@
+"""
+Project: THE STUFFY STUDY (CHEM501)
+Experiment: An Investigation into the Ventilation and Learning Environment in Student Study Spaces
+Module: A Dashboard for Visualising and Cleaning Data | Role: Real-Time Data Visualisation, Graphs, Tables and Ability to Download Data in .csv, .json, .pdf and .excel formats. 
+Description:
+	This script presents the code used to create the dashboard. 
+    This includes using Python and HTML to create a visually-appealing, logical and clean space to visualise data collected. 
+    The script includes a theme option between light and dark, selection of variable views, multiple tabs with 1. a data table,
+    2. a chart, 3. summary statistics, 4. reference data, 5. data cleaning and 6. data download options. 
+    There are also additional options of visualising the data for multiple variables at once in a graph, 
+    real-time data and anomaly detection. 
+System Requirements:
+    1. pip install the following packages: 
+    streamlit, pandas, numpy, matplotlib, PIL, time, scipy.signal and json. 
+Authors: Josh and Kinga
+Date: November 2025
+License: MIT
+"""
+
+
 import streamlit as st 
 import pandas as pd 
 import numpy as np 
@@ -632,3 +652,4 @@ for var, container in live_containers.items():
         """, 
         unsafe_allow_html = True
     )
+
