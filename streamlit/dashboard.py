@@ -741,3 +741,4 @@ for var, container in live_containers.items():
         """, 
         unsafe_allow_html = True
     )
+
