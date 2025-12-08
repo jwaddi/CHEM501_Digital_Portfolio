@@ -1,0 +1,82 @@
+
+#
+# Theme toggle
+#
+theme_choice = st.sidebar.radio("Theme", ["Light", "Dark"], index=0)
+
+def apply_theme(theme):
+    if theme == "Dark":
+        # matplotlib dark style like dark_background but minimal manual settings
+        mt.rcParams.update({
+            "axes.facecolor": "#222222",
+            "figure.facecolor": "#222222",
+            "savefig.facecolor": "#222222",
+            "axes.edgecolor": "#E7E8CB",
+            "axes.labelcolor": "#E7E8CB",
+            "xtick.color": "#E7E8CB",
+            "ytick.color": "#E7E8CB",
+            "text.color": "#E7E8CB",
+            "legend.facecolor": "#333333",
+            "grid.color": "#444444"
+        })
+        # streamlit CSS for dark theme
+        st.markdown(
+            """
+            <style>
+            .stApp { background-color: #111111; color: #EEE; }
+            .stSidebar { background-color: #121212; color: #EEE; }
+            .css-1d391kg { background-color: #121212; } /* input bg - may vary by Streamlit version */
+            </style>
+            """, unsafe_allow_html=True
+        )
+    else:
+        # revert to light
+        mt.rcParams.update({
+            "axes.facecolor": "white",
+            "figure.facecolor": "white",
+            "savefig.facecolor": "white",
+            "axes.edgecolor": "black",
+            "axes.labelcolor": "black",
+            "xtick.color": "black",
+            "ytick.color": "black",
+            "text.color": "black",
+            "legend.facecolor": "#FFFFFF",
+            "grid.color": "#DDDDDD"
+        })
+
+       # full CSS reset to override .toml dark theme
+        st.markdown(
+            """
+            <style>
+            /* Reset global colors that .toml applies */
+            html, body, .stApp, [class^="st-"], [class*=" st-"] {
+                background-color: white !important;
+                color: black !important;
+            }
+
+            /* Sidebar */
+            .stSidebar {
+                background-color: #F8F8F8 !important;
+                color: black !important;
+            }
+
+            /* Inputs */
+            input, textarea, select, button,
+            .stTextInput input, .stNumberInput input,
+            .stTextArea textarea {
+                background-color: white !important;
+                color: black !important;
+            }
+
+            /* Optional recovery for dark-mode widget classes */
+            .css-1d391kg {
+                background-color: white !important;
+                color: black !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+# Apply chosen theme
+apply_theme(theme_choice)
