@@ -24,7 +24,7 @@ The dashboard is designed to be robust, reproducible, and extendable, following 
 
 
 
-Dashboard: 
+### Streamlit Dashboard
 
 1. Ensure you are running your dashboard code in the correct file directory
 
