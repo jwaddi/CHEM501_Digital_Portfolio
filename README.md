@@ -44,3 +44,11 @@ This will take you to a localhost:8501 link where you can open your dashboard.
 
 Data: 
 To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
+
+
+
+### Authors 
+# Josh and Kinga 
+CHEM501 Digital Chemistry
+University of Liverpool
+December 2025
