@@ -46,6 +46,12 @@ Data:
 To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
 
 
+# Academic Context 
+* Idk point one
+* Point Two
+* Point THree
+* Point Four
+* <3
 
 # Authors 
 ### Josh and Kinga 
