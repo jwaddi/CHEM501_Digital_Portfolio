@@ -9,11 +9,11 @@ The Stuffy Study investigates the ventilation and learning environment in studen
 
 This repository contains:
 
-a Streamlit dashboard for data exploration, cleaning, visualisation, and reporting
+* a Streamlit dashboard for data exploration, cleaning, visualisation, and reporting
 
-a modular Python architecture separating data handling, plotting, theming, reporting, and reference information
+* a modular Python architecture separating data handling, plotting, theming, reporting, and reference information
 
-support for live sensor data, uploaded CSV datasets, and simulated fallback data
+* support for live sensor data, uploaded CSV datasets, and simulated fallback data
 
 The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
 
