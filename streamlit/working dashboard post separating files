@@ -8,6 +8,7 @@ import streamlit as st
 import data_utils
 import plot_utils
 import theme_toggle
+import data_reports
 
 # --------------------------------------------------
 # TITLE 
@@ -236,3 +237,19 @@ with tab3:
     )
 
     st.pyplot(fig_clean)
+
+#----------------------------------------------------
+# Tab 4 - Download Data
+#----------------------------------------------------
+
+tab4 = st.tabs(["Download Data"])[0]
+
+with tab4:
+    st.subheader("Download Data")
+
+    data_reports.generate_pdf_report(
+        option=option,
+        data_dict=data_dict,
+        df_clean=df_clean,
+        compare_variables=compare_variables if "compare_variables" in locals() else None
+    )
