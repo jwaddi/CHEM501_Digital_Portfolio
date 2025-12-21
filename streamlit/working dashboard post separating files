@@ -154,8 +154,8 @@ st.write(f"Data for: {option}")
 # Tabs
 # --------------------------------------------------
 
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["Table", "Chart", "Data Cleaning", "Download Data"]
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+    ["Table", "Chart", "Statistics", "Literature Values", "Data Cleaning", "Download Data"]
 )
 
 # --------------------------------------------------
@@ -227,11 +227,25 @@ with tab2:
             )
             st.pyplot(fig2)
 
-# --------------------------------------------------
-# TAB 3 - Data Cleaning (from data_utils.py)
-# --------------------------------------------------
+# -----------------------------------------------------
+# TAB 3 - Statistics Summary (from stats_utils.py)
+# -----------------------------------------------------
 
 with tab3:
+    stats_utils.render_statistics_tab(selected_data, option, y_col)
+
+# -----------------------------------------------------
+# TAB 4 - Reference Table (from reference_tables.py)
+# -----------------------------------------------------
+
+with tab4:
+    reference_tables.render_iaq_reference_table()
+
+# --------------------------------------------------
+# TAB 5 - Data Cleaning (from data_utils.py)
+# --------------------------------------------------
+
+with tab5:
     st.subheader("Data Cleaning Options")
 
     var = st.selectbox(
@@ -269,10 +283,10 @@ with tab3:
     st.pyplot(fig_clean)
 
 # --------------------------------------------------
-# TAB 4 - Download Data (from data_reports.py)
+# TAB 6 - Download Data (from data_reports.py)
 # --------------------------------------------------
 
-with tab4:
+with tab6:
     st.subheader("Download Data")
 
     data_reports.generate_pdf_report(
