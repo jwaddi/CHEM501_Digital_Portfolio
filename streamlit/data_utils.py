@@ -6,7 +6,24 @@ import numpy as np
 import streamlit as st
 
 # --------------------------------------------------
-# 1. CSV LOADING + STANDARDISATION
+# 1. Adding Live Data Tracking from CSV file
+# ---------------------------------------------------
+def read_latest_csv(csv_path, tail=200):
+    """
+    Read the most recent rows from a growing CSV file.
+    Skips metadata header automatically.
+    """
+    try:
+        df = pd.read_csv(csv_path, skiprows=4)
+        if len(df) > tail:
+            df = df.tail(tail)
+        df = df.rename(columns={"Elapsed_Seconds": "Time (s)"})
+        return df
+    except Exception:
+        return None
+
+# --------------------------------------------------
+# 2. CSV LOADING + STANDARDISATION
 # --------------------------------------------------
 
 def load_and_standardise_csv(path_or_buffer):
@@ -33,7 +50,7 @@ def load_and_standardise_csv(path_or_buffer):
 
     missing = [c for c in expected_columns if c not in df.columns]
     if missing:
-        st.warning(f"Missing columns in CSV: {missing}")
+        print(f"Warning: missing columns in CSV: {missing}")
 
     # Standardise time column
     df = df.rename(columns={"Elapsed_Seconds": "Time (s)"})
@@ -74,7 +91,7 @@ def build_data_dict_from_csv(csv_df):
     return data_dict
 
 # -------------------------------------------------------------------
-# 2. SIMULATED DATA (fallback in case no CSV file has been uploaded) 
+# 3. SIMULATED DATA (fallback in case no CSV file has been uploaded) 
 # -------------------------------------------------------------------
 
 def generate_data():
@@ -107,7 +124,7 @@ def generate_data():
     return data_dict
 
 # --------------------------------------------------
-# 3. THRESHOLDS + ANOMALY DETECTION
+# 4. THRESHOLDS + ANOMALY DETECTION
 # --------------------------------------------------
 
 thresholds = {
