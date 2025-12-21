@@ -1,6 +1,24 @@
 # CHEM501_Digital_Portfolio
 
 
+A good README should include a brief overview section with a paragraph or two explaining what the software does, how it works, and who made it.
+
+### Project Overview
+
+The Stuffy Study investigates the ventilation and learning environment in student study spaces using real-time environmental sensing and interactive data visualisation.
+
+This repository contains:
+
+a Streamlit dashboard for data exploration, cleaning, visualisation, and reporting
+
+a modular Python architecture separating data handling, plotting, theming, reporting, and reference information
+
+support for live sensor data, uploaded CSV datasets, and simulated fallback data
+
+The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
+
+
+
 
 Dashboard: 
 
