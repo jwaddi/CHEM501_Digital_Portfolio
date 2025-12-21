@@ -9,6 +9,10 @@ The Stuffy Study investigates the ventilation and learning environment in studen
 
 This repository contains:
 
+* SOMETHING ABOUT DATA COLLECTION
+
+* SOMETHING ABOUT DATA COLLECTION #2
+
 * a Streamlit dashboard for data exploration, cleaning, visualisation, and reporting
 
 * a modular Python architecture separating data handling, plotting, theming, reporting, and reference information
