@@ -3,7 +3,7 @@
 
 A good README should include a brief overview section with a paragraph or two explaining what the software does, how it works, and who made it.
 
-### Project Overview
+# Project Overview
 
 The Stuffy Study investigates the ventilation and learning environment in student study spaces using real-time environmental sensing and interactive data visualisation.
 
@@ -47,8 +47,8 @@ To view Stuffy_Study_Master.db please download the DB browser for SQLite.
 
 
 
-### Authors 
-# Josh and Kinga 
+# Authors 
+### Josh and Kinga 
 CHEM501 Digital Chemistry
 University of Liverpool
 December 2025
