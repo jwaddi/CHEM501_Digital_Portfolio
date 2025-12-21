@@ -1,12 +1,26 @@
+# theme_toggle.py
+# Handles light/dark theme switching for Streamlit + matplotlib
 
-#
-# Theme toggle
-#
-theme_choice = st.sidebar.radio("Theme", ["Light", "Dark"], index=0)
+import streamlit as st
+import matplotlib as mt
+
+def theme_selector():
+    """
+    Render theme selector in sidebar and return selected theme.
+    """
+    return st.sidebar.radio(
+        "Theme",
+        ["Light", "Dark"],
+        index=0
+    )
+
 
 def apply_theme(theme):
+    """
+    Apply theme styles to matplotlib and Streamlit via CSS.
+    """
     if theme == "Dark":
-        # matplotlib dark style like dark_background but minimal manual settings
+        # Matplotlib dark styling
         mt.rcParams.update({
             "axes.facecolor": "#222222",
             "figure.facecolor": "#222222",
@@ -19,18 +33,26 @@ def apply_theme(theme):
             "legend.facecolor": "#333333",
             "grid.color": "#444444"
         })
-        # streamlit CSS for dark theme
+
+        # Streamlit dark CSS
         st.markdown(
             """
             <style>
-            .stApp { background-color: #111111; color: #EEE; }
-            .stSidebar { background-color: #121212; color: #EEE; }
-            .css-1d391kg { background-color: #121212; } /* input bg - may vary by Streamlit version */
+            .stApp {
+                background-color: #111111;
+                color: #E7E8CB;
+            }
+            .stSidebar {
+                background-color: #121212;
+                color: #E7E8CB;
+            }
             </style>
-            """, unsafe_allow_html=True
+            """,
+            unsafe_allow_html=True
         )
+
     else:
-        # revert to light
+        # Matplotlib light styling
         mt.rcParams.update({
             "axes.facecolor": "white",
             "figure.facecolor": "white",
@@ -44,32 +66,21 @@ def apply_theme(theme):
             "grid.color": "#DDDDDD"
         })
 
-       # full CSS reset to override .toml dark theme
+        # HARD reset to override config.toml dark theme
         st.markdown(
             """
             <style>
-            /* Reset global colors that .toml applies */
             html, body, .stApp, [class^="st-"], [class*=" st-"] {
                 background-color: white !important;
                 color: black !important;
             }
 
-            /* Sidebar */
             .stSidebar {
                 background-color: #F8F8F8 !important;
                 color: black !important;
             }
 
-            /* Inputs */
-            input, textarea, select, button,
-            .stTextInput input, .stNumberInput input,
-            .stTextArea textarea {
-                background-color: white !important;
-                color: black !important;
-            }
-
-            /* Optional recovery for dark-mode widget classes */
-            .css-1d391kg {
+            input, textarea, select, button {
                 background-color: white !important;
                 color: black !important;
             }
@@ -77,6 +88,3 @@ def apply_theme(theme):
             """,
             unsafe_allow_html=True
         )
-
-# Apply chosen theme
-apply_theme(theme_choice)
