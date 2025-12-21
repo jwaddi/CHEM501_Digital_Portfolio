@@ -2,15 +2,51 @@
 This script will combine all individual files and modules into a working dashboard, performing the same function as the dashboard.py file in this folder. 
 
 """
-
 import streamlit as st
-
-# import modules
 import data_utils
-import plot_utils
-import theme_toggle
 
-# report package
-from data_reports import data_report_generation
+# --------------------------------------------------
+# CSV INPUT (from data_utils)
+# --------------------------------------------------
 
+st.sidebar.subheader("Data input")
 
+uploaded_file = st.sidebar.file_uploader(
+    "Upload CSV dataset (CSV)",
+    type=["csv"]
+)
+
+use_local_path = st.sidebar.checkbox(
+    "Load CSV from local path (developer mode)",
+    value=False
+)
+
+local_path = ""
+if use_local_path:
+    local_path = st.sidebar.text_input("Enter local CSV path")
+
+csv_df = None
+
+if uploaded_file is not None:
+    try:
+        csv_df = data_utils.load_and_standardise_csv(uploaded_file)
+        st.sidebar.success("CSV uploaded successfully")
+    except Exception as e:
+        st.sidebar.error(f"Error reading CSV: {e}")
+
+elif use_local_path and local_path:
+    try:
+        csv_df = data_utils.load_and_standardise_csv(local_path)
+        st.sidebar.success("CSV loaded from path")
+    except Exception as e:
+        st.sidebar.error(f"Error reading CSV: {e}")
+
+# --------------------------------------------------
+# BUILD DATA DICTIONARY
+# --------------------------------------------------
+
+if csv_df is not None:
+    data_dict = data_utils.build_data_dict_from_csv(csv_df)
+else:
+    st.warning("No CSV uploaded. Using simulated data.")
+    data_dict = data_utils.generate_data()
