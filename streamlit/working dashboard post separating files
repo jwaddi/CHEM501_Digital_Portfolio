@@ -1,8 +1,11 @@
-""" 
-This script will combine all individual files and modules into a working dashboard, performing the same function as the dashboard.py file in this folder. 
-
 """
+Main dashboard script.
+Combines all modules into a working Streamlit dashboard.
+"""
+
 import streamlit as st
+import pandas as pd
+from streamlit_autorefresh import st_autorefresh
 
 # Project Modules
 import data_utils
@@ -11,14 +14,16 @@ import theme_toggle
 import data_reports
 
 # --------------------------------------------------
-# TITLE 
+# Title
 # --------------------------------------------------
 
 st.markdown(
-    '<h1 class="project-title">'
-    'The Stuffy Study Pod: An Investigation into the Ventilation and Learning Environment '
-    'in Student Study Spaces'
-    '</h1>',
+    """
+    <h1 class="project-title">
+    The Stuffy Study Pod: An Investigation into the Ventilation and Learning Environment
+    in Student Study Spaces
+    </h1>
+    """,
     unsafe_allow_html=True
 )
 
@@ -36,61 +41,101 @@ st.markdown(
 )
 
 # --------------------------------------------------
-# THEME TOGGLE
+# Theme Toggle (from theme_selector.py)
 # --------------------------------------------------
 
 theme = theme_toggle.theme_selector()
 theme_toggle.apply_theme(theme)
 
-# --------------------------------------------------
-# CSV INPUT (from data_utils)
-# --------------------------------------------------
+# -----------------------------------------------------------
+# Data Source Selection - live tracking or upload CSV file
+# -----------------------------------------------------------
 
-st.sidebar.subheader("Data input")
+st.sidebar.header("Data Source")
+
+use_live_csv = st.sidebar.checkbox("Use live sensor feed (CSV)")
+
+csv_path = None
+if use_live_csv:
+    csv_path = st.sidebar.text_input(
+        "Live CSV file path",
+        value="Stuffy_Study_YYYY-MM-DD_HH-MM-SS.csv"
+    )
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Static CSV Input")
 
 uploaded_file = st.sidebar.file_uploader(
-    "Upload CSV dataset (CSV)",
+    "Upload CSV dataset",
     type=["csv"]
 )
 
-use_local_path = st.sidebar.checkbox(
-    "Load CSV from local path (developer mode)",
-    value=False
-)
-
+use_local_path = st.sidebar.checkbox("Load CSV from local path (developer mode)")
 local_path = ""
 if use_local_path:
     local_path = st.sidebar.text_input("Enter local CSV path")
 
-csv_df = None
-
-if uploaded_file is not None:
-    try:
-        csv_df = data_utils.load_and_standardise_csv(uploaded_file)
-        st.sidebar.success("CSV uploaded successfully")
-    except Exception as e:
-        st.sidebar.error(f"Error reading CSV: {e}")
-
-elif use_local_path and local_path:
-    try:
-        csv_df = data_utils.load_and_standardise_csv(local_path)
-        st.sidebar.success("CSV loaded from path")
-    except Exception as e:
-        st.sidebar.error(f"Error reading CSV: {e}")
+# Adding a "LIVE" badge to show live data collection
+if use_live_csv:
+    st.markdown(
+        """
+        <div style="
+            display:inline-block;
+            padding:6px 14px;
+            background-color:#E63946;
+            color:white;
+            font-weight:bold;
+            border-radius:20px;
+            font-size:14px;
+            margin-bottom:10px;
+        ">
+        ● LIVE
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # --------------------------------------------------
-# BUILD DATA DICTIONARY
+# Auto-refresh for live data
+# --------------------------------------------------
+
+if use_live_csv:
+    st_autorefresh(
+        interval=2000,   # refresh every 2 seconds
+        key="live_csv_refresh"
+    )
+
+# --------------------------------------------------
+# Load Data (one source only - from data_utils.py)
+# --------------------------------------------------
+
+csv_df = None
+
+if use_live_csv and csv_path:
+    csv_df = data_utils.read_latest_csv(csv_path)
+
+    if csv_df is None:
+        st.warning("Waiting for live data...")
+        st.stop()
+
+elif uploaded_file is not None:
+    csv_df = data_utils.load_and_standardise_csv(uploaded_file)
+
+elif use_local_path and local_path:
+    csv_df = data_utils.load_and_standardise_csv(local_path)
+
+# --------------------------------------------------
+# Build a Data Dictionary (from data_utils.py)
 # --------------------------------------------------
 
 if csv_df is not None:
     data_dict = data_utils.build_data_dict_from_csv(csv_df)
 else:
-    st.warning("No CSV uploaded. Using simulated data.")
+    st.warning("No CSV provided. Using simulated data.")
     data_dict = data_utils.generate_data()
 
-
 # --------------------------------------------------
-# SIDEBAR CONTROLS
+# Sidebar Controls (Depends on data_dict)
 # --------------------------------------------------
 
 st.sidebar.header("Controls")
@@ -101,24 +146,20 @@ option = st.sidebar.selectbox(
 )
 
 selected_data = data_dict[option]
-
-if option == "Overview":
-    y_col = None
-else:
-    y_col = selected_data.columns[1]
+y_col = None if option == "Overview" else selected_data.columns[1]
 
 st.write(f"Data for: {option}")
 
 # --------------------------------------------------
-# TABS
+# Tabs
 # --------------------------------------------------
 
-tab1, tab2, tab3 = st.tabs(
-    ["Table", "Chart", "Data Cleaning"]
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Table", "Chart", "Data Cleaning", "Download Data"]
 )
 
 # --------------------------------------------------
-# TAB 1 - TABLE
+# TAB 1 - Table
 # --------------------------------------------------
 
 with tab1:
@@ -126,7 +167,7 @@ with tab1:
     st.dataframe(selected_data)
 
 # --------------------------------------------------
-# TAB 2 - CHART
+# TAB 2 - Chart (from plot_utils.py)
 # --------------------------------------------------
 
 with tab2:
@@ -168,13 +209,10 @@ with tab2:
 
     st.pyplot(fig)
 
-    # -------------------------------
-    # Comparison Mode
-    # -------------------------------
-
     st.sidebar.subheader("Comparison Mode")
     enable_comparison = st.sidebar.checkbox("Enable Comparison Mode")
 
+    compare_variables = None
     if enable_comparison:
         compare_variables = st.sidebar.multiselect(
             "Select variables to compare",
@@ -190,7 +228,7 @@ with tab2:
             st.pyplot(fig2)
 
 # --------------------------------------------------
-# TAB 3 - DATA CLEANING
+# TAB 3 - Data Cleaning (from data_utils.py)
 # --------------------------------------------------
 
 with tab3:
@@ -204,21 +242,18 @@ with tab3:
     df = data_dict[var].copy()
     y_col2 = df.columns[1]
 
-    remove_outliers = st.checkbox("Remove Outliers")
-
-    if remove_outliers:
+    if st.checkbox("Remove Outliers"):
         df_clean = data_utils.remove_outliers(df, y_col2)
     else:
         df_clean = df.copy()
 
-    st.subheader("Smoothing Filter")
     smoothing_method = st.selectbox(
-        "Select method",
+        "Smoothing Method",
         ["None", "Moving Average", "Savitzky-Golay"]
     )
 
     window_size = st.slider(
-        "Window size / polynomial order",
+        "Window size",
         min_value=3,
         max_value=21,
         step=2,
@@ -230,19 +265,12 @@ with tab3:
     elif smoothing_method == "Savitzky-Golay":
         df_clean = data_utils.savgol_smoothing(df_clean, y_col2, window_size)
 
-    fig_clean = plot_utils.plot_raw_vs_cleaned(
-        df,
-        df_clean,
-        y_col2
-    )
-
+    fig_clean = plot_utils.plot_raw_vs_cleaned(df, df_clean, y_col2)
     st.pyplot(fig_clean)
 
-#----------------------------------------------------
-# Tab 4 - Download Data
-#----------------------------------------------------
-
-tab4 = st.tabs(["Download Data"])[0]
+# --------------------------------------------------
+# TAB 4 - Download Data (from data_reports.py)
+# --------------------------------------------------
 
 with tab4:
     st.subheader("Download Data")
@@ -251,5 +279,5 @@ with tab4:
         option=option,
         data_dict=data_dict,
         df_clean=df_clean,
-        compare_variables=compare_variables if "compare_variables" in locals() else None
+        compare_variables=compare_variables
     )
