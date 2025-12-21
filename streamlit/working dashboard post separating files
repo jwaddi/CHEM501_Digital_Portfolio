@@ -3,7 +3,35 @@ This script will combine all individual files and modules into a working dashboa
 
 """
 import streamlit as st
+
+# Project Modules
 import data_utils
+import plot_utils
+
+# --------------------------------------------------
+# TITLE 
+# --------------------------------------------------
+
+st.markdown(
+    '<h1 class="project-title">'
+    'The Stuffy Study Pod: An Investigation into the Ventilation and Learning Environment '
+    'in Student Study Spaces'
+    '</h1>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <style>
+    .project-title {
+        color: #E7E8CB;
+        font-size: 2.5em;
+        font-weight: bold;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # --------------------------------------------------
 # CSV INPUT (from data_utils)
@@ -50,3 +78,153 @@ if csv_df is not None:
 else:
     st.warning("No CSV uploaded. Using simulated data.")
     data_dict = data_utils.generate_data()
+
+
+# --------------------------------------------------
+# SIDEBAR CONTROLS
+# --------------------------------------------------
+
+st.sidebar.header("Controls")
+
+option = st.sidebar.selectbox(
+    "Select a variable",
+    list(data_dict.keys())
+)
+
+selected_data = data_dict[option]
+
+if option == "Overview":
+    y_col = None
+else:
+    y_col = selected_data.columns[1]
+
+st.write(f"Data for: {option}")
+
+# --------------------------------------------------
+# TABS
+# --------------------------------------------------
+
+tab1, tab2, tab3 = st.tabs(
+    ["Table", "Chart", "Data Cleaning"]
+)
+
+# --------------------------------------------------
+# TAB 1 - TABLE
+# --------------------------------------------------
+
+with tab1:
+    st.subheader(f"{option} Table")
+    st.dataframe(selected_data)
+
+# --------------------------------------------------
+# TAB 2 - CHART
+# --------------------------------------------------
+
+with tab2:
+    st.subheader(f"{option} over Time Chart")
+
+    threshold_value = None
+    time_point = None
+
+    if option != "Overview" and pd.api.types.is_numeric_dtype(selected_data[y_col]):
+        y_min = float(selected_data[y_col].min())
+        y_max = float(selected_data[y_col].max())
+
+        st.sidebar.subheader("Safety Threshold")
+        threshold_value = st.sidebar.slider(
+            f"{y_col} Safety Threshold",
+            min_value=y_min,
+            max_value=y_max,
+            value=y_min + (y_max - y_min) / 2
+        )
+
+        st.sidebar.subheader("Time Point Control")
+        time_point = st.sidebar.slider(
+            "Set a time point",
+            min_value=int(selected_data["Time (s)"].min()),
+            max_value=int(selected_data["Time (s)"].max()),
+            value=int(selected_data["Time (s)"].max() // 2),
+            step=1
+        )
+
+    fig = plot_utils.plot_main_chart(
+        selected_data=selected_data,
+        option=option,
+        y_col=y_col,
+        thresholds=data_utils.thresholds,
+        iaq_thresholds=data_utils.iaq_thresholds,
+        threshold_value=threshold_value,
+        time_point=time_point
+    )
+
+    st.pyplot(fig)
+
+    # -------------------------------
+    # Comparison Mode
+    # -------------------------------
+
+    st.sidebar.subheader("Comparison Mode")
+    enable_comparison = st.sidebar.checkbox("Enable Comparison Mode")
+
+    if enable_comparison:
+        compare_variables = st.sidebar.multiselect(
+            "Select variables to compare",
+            [v for v in data_dict.keys() if v != "Overview"],
+            default=[option] if option != "Overview" else []
+        )
+
+        if compare_variables:
+            fig2 = plot_utils.plot_comparison(
+                data_dict,
+                compare_variables
+            )
+            st.pyplot(fig2)
+
+# --------------------------------------------------
+# TAB 3 - DATA CLEANING
+# --------------------------------------------------
+
+with tab3:
+    st.subheader("Data Cleaning Options")
+
+    var = st.selectbox(
+        "Select variable to clean",
+        [v for v in data_dict.keys() if v != "Overview"]
+    )
+
+    df = data_dict[var].copy()
+    y_col2 = df.columns[1]
+
+    remove_outliers = st.checkbox("Remove Outliers")
+
+    if remove_outliers:
+        df_clean = data_utils.remove_outliers(df, y_col2)
+    else:
+        df_clean = df.copy()
+
+    st.subheader("Smoothing Filter")
+    smoothing_method = st.selectbox(
+        "Select method",
+        ["None", "Moving Average", "Savitzky-Golay"]
+    )
+
+    window_size = st.slider(
+        "Window size / polynomial order",
+        min_value=3,
+        max_value=21,
+        step=2,
+        value=5
+    )
+
+    if smoothing_method == "Moving Average":
+        df_clean = data_utils.moving_average(df_clean, y_col2, window_size)
+    elif smoothing_method == "Savitzky-Golay":
+        df_clean = data_utils.savgol_smoothing(df_clean, y_col2, window_size)
+
+    fig_clean = plot_utils.plot_raw_vs_cleaned(
+        df,
+        df_clean,
+        y_col2
+    )
+
+    st.pyplot(fig_clean)
