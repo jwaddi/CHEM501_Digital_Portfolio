@@ -46,6 +46,16 @@ Data:
 To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
 
 
+## Development Notes
+
+* All visualisation logic is isolated in plot_utils.py
+
+* All data logic is isolated in data_utils.py
+
+* The dashboard script acts only as an orchestrator
+
+* Modules can be extended independently without breaking the app
+
 # Academic Context 
 * Idk point one
 * Point Two
