@@ -223,7 +223,7 @@ Uploaded CSV files are automatically standardised and split into individual sens
 ```
 * Install packages written above or copy-paste the following:
  ```bash
-pip install streamlit pandas numpy matplotlib scipy fpdf pillow streamlit-autorefresh
+pip install streamlit pandas numpy matplotlib scipy fpdf openpyxl pillow streamlit-autorefresh
 ```
 * Run the dashboard:
 ```bash
