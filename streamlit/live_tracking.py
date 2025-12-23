@@ -4,6 +4,7 @@
 import streamlit as st
 import numpy as np
 from streamlit_autorefresh import st_autorefresh
+import pandas as pd 
 
 import data_utils
 
