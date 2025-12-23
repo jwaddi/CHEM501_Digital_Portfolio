@@ -23,7 +23,7 @@ def plot_main_chart(
     """
     fig, ax = plt.subplots()
     # Resolve sensor key
-    sensor_key = DISPLAY_TO_SENSOR.get(option)
+    sensor_key = DISPLAY_TO_SENSOR.get(option, option)
 
     # ---------------------------------------------
     # Main plot of data
@@ -65,23 +65,37 @@ def plot_main_chart(
     anomaly_x = []
     anomaly_y = []
 
-    for _, row in selected_data.iterrows():
-        time = row["Time (s)"]
-        val = row[y_col]
+    if option != "Overview" and sensor_key in thresholds:
 
-        if is_anomaly:
-            anomaly_x.append(time)
-            anomaly_y.append(val)
+        low, high = thresholds[sensor_key]
 
-        if anomaly_x:
-            ax.scatter(
-            anomaly_x,
-            anomaly_y,
-            color="#9D00FF",
-            s=35,
-            zorder=10,
-            label="Anomaly"
-        )
+        for _, row in selected_data.iterrows():
+            time = row["Time (s)"]
+            val = row[y_col]
+
+            if val < low or val > high:
+                anomaly_x.append(time)
+                anomaly_y.append(val)
+
+    elif option == "IAQ":
+
+        for _, row in selected_data.iterrows():
+            time = row["Time (s)"]
+            val = row[y_col]
+
+            if val > iaq_thresholds[-1]:
+                anomaly_x.append(time)
+                anomaly_y.append(val)
+
+    if anomaly_x:
+        ax.scatter(
+        anomaly_x,
+        anomaly_y,
+        color="#9D00FF",
+        s=5,
+        zorder=10,
+        label="Anomaly"
+    )
 
 
     # ---------------------------------------------
