@@ -211,6 +211,16 @@ Uploaded CSV files are automatically standardised and split into individual sens
 * Ensure you are running `streamlit run dashboard.py` from the correct directory.
 * Check that all required Python packages are installed.
 
+### ModuleNotFoundError: No module named 'streamlit'
+* Go to Anaconda Prompt
+* Activate the enviornment by writing in
+ ```python
+ conda activate streamlitenv```
+* Install packages written above or:
+ ```python
+pip install streamlit pandas numpy matplotlib scipy fpdf pillow streamlit-autorefresh```
+
+
 ### Theme not applying correctly 
 * Confirm `config.toml` is inside `.streamlit` folder.
 * Ensure the folder name is exactly `.streamlit`, which includes the dot.
@@ -231,4 +241,5 @@ Uploaded CSV files are automatically standardised and split into individual sens
 ### K. A. Dabrowska and J. Waddington 
 CHEM501 Digital Chemistry
 University of Liverpool
+Licence: MIT
 December 2025
