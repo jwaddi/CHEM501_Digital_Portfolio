@@ -21,7 +21,8 @@ This repository contains:
 
 The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
 
-# Required Librariesas well as built-in libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
+# Required Libraries
+This project utilises a number of external as well as built-in libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
 
 ### For data aquisiton: 
 1. ssssss
