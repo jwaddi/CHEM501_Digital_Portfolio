@@ -69,6 +69,10 @@ pip install pillow
 ```python
 pip install streamlit-autorefresh
 ```
+9. openpyxl - Required for exporting cleaned data to Excel (.xlsx) format.
+```python
+pip install openpyxl
+```
 
 
 # Data Aquisition
@@ -179,11 +183,16 @@ You can do so by selecting Copy Relative Path on the dashboard file and removing
 cd "Your path directory"
 ```
 
-2. Launch the Streamlit app. 
+2. Launch the Streamlit app with either: 
 
 ```bash
 streamlit run "dashboard.py"
 ```
+or 
+```bash
+python -m streamlit run Dashboard_App/dashboard.py
+```
+
 This will take you to a localhost:8501 link where you can open your dashboard. If this doesn't open you can try to manually type in: 
 
 ```arduino
@@ -219,7 +228,7 @@ Uploaded CSV files are automatically standardised and split into individual sens
 ```
 * Install packages written above or copy-paste the following:
  ```bash
-pip install streamlit pandas numpy matplotlib scipy fpdf pillow streamlit-autorefresh
+pip install streamlit pandas numpy matplotlib scipy fpdf openpyxl pillow streamlit-autorefresh
 ```
 * Run the dashboard:
 ```bash
