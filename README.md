@@ -85,23 +85,30 @@ The dashboard allows user to visualise, analyse, clean and export environmental 
 
 ## Running the Dashboard 
 
-1. Ensure the required Python libraries are installed before running the dashboard (see above). 
+1. Ensure the required Python libraries are installed before running the dashboard (see above).
 
-1. Ensure you are running your dashboard code in the correct file directory
+### Starting the Dashboard
 
-You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
+1. Navigate to the directory containing `dashboard.py`.
+
+You can do so by selecting Copy Relative Path on the dashboard file and removing the filename from the end
 
 ```bash
 cd "Your path directory"
 ```
 
-Followed by 
+2. Launch the Streamlit app. 
+
 ```bash
 streamlit run "dashboard.py"
 ```
-This will take you to a localhost:8501 link where you can open your dashboard. 
+This will take you to a localhost:8501 link where you can open your dashboard. If this doesn't open you can try to manually type in: 
 
-2. When downloaded, ensure the config.toml file is in a separate folder named '.steamlit' in the same directory as the dashboard. 
+```http://localhost:8501```
+
+
+
+3. When downloaded, ensure the config.toml file is in a separate folder named '.steamlit' in the same directory as the dashboard. 
 
 
 ## Development Notes
