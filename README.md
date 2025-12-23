@@ -60,12 +60,55 @@ To view Stuffy_Study_Master.db please download the DB browser for SQLite.
 
 
 # Required Libraries
+This project uses a number of external libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
+
+### For data aquisiton: 
+1. ssssss
+
+     pip install ssssssss
+
+2. kkkkkkkkkkkkk
+
+     pip install kkkkkkkkkkkk
+
+3. zzzzzzzzzzzzz
+
+     pip install zzzzzzzz
+
+
+### For running data visualisation:
 
 1. Pandas - Used for loading, cleaning, manipulating, and analysing tabular sensor data (CSV files).
 
-     pip install pandas
-3. Matplotlib - For creating static, animated, and interactive visualizations, such as graphs. To install: pip install matplotlib
-4. streamlit - For creating and manipulating the dashboard 
+     pip install pandas#
+   
+2. Matplotlib - Used for generating time-series plots, comparison charts, and cleaned versus raw data visualisations.
+
+     pip install matplotlib
+   
+3. streamlit - The core framework used to build the interactive dashboard interface, including tabs, sliders, and live updates.
+
+pip install streamlit
+
+4. numpy - Provides numerical operations used for calculations, simulations, and data processing.
+
+     pip install numpy
+
+5. scipy - Required for signal processing functions such as Savitzky–Golay smoothing.
+
+     pip install scipy
+
+6. fpdf - Used to generate downloadable PDF reports directly from the dashboard.
+
+     pip install fpdf
+
+7. Pillow (PIL) - Handles image processing when embedding plots into PDF reports.
+
+     pip install pillow
+
+8. streamlit-autorefresh - Enables automatic dashboard refresh when monitoring live sensor data from a continuously updating CSV file.
+
+     pip install streamlit-autorefresh
 
 # Academic Context 
 * Idk point one
