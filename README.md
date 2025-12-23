@@ -259,7 +259,11 @@ or  with
 
 # Authors 
 ### K. A. Dabrowska and J. Waddington 
+
 CHEM501 Digital Chemistry
+
 University of Liverpool
+
 Licence: MIT
+
 December 2025
