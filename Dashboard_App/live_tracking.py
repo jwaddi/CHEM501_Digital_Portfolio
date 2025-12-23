@@ -1,7 +1,7 @@
 # live_tracking.py
 # Real-time live tracking widget for Streamlit
 
-import Dashboard_App as st
+import streamlit as st
 import numpy as np
 from streamlit_autorefresh import st_autorefresh
 import pandas as pd

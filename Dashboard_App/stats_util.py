@@ -1,4 +1,5 @@
 # statistics tab
+import streamlit as st
 
 def render_statistics_tab(selected_data, option, y_col):
     if option == "Overview":

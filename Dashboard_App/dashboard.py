@@ -17,18 +17,18 @@ Date: November 2025
 License: MIT
 """
 
-import Dashboard_App as st
+import streamlit as st
 import pandas as pd
 from streamlit_autorefresh import st_autorefresh
 
 # Project Modules
-import data_utils
-import plot_utils
-import theme_toggle
-import data_reports
-import live_tracking
-import reference_tables
-import stats_util
+from Dashboard_App import data_utils
+from Dashboard_App import plot_utils
+from Dashboard_App import theme_toggle
+from Dashboard_App import data_reports
+from Dashboard_App import live_tracking
+from Dashboard_App import reference_tables
+from Dashboard_App import stats_util
 
 # --------------------------------------------------
 # Title

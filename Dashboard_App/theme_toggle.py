@@ -1,7 +1,7 @@
 # theme_toggle.py
 # Handles light/dark theme switching for Streamlit + matplotlib
 
-import Dashboard_App as st
+import streamlit as st
 import matplotlib as mt
 
 def theme_selector():

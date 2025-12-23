@@ -6,7 +6,7 @@ from fpdf import FPDF
 from PIL import Image
 import pandas as pd
 import io
-import Dashboard_App as st
+import streamlit as st
 import matplotlib as mt
 
 
@@ -112,7 +112,7 @@ def generate_pdf_report(
     pdf.output(pdf_buffer)
     pdf_buffer.seek(0)
 
-    st.download_button(
+    st.sidebar.download_button(
         "Download PDF Report",
         data=pdf_buffer,
         file_name=f"{option}_report.pdf",
@@ -123,7 +123,7 @@ def generate_pdf_report(
     # CSV
     # --------------------------------------------------
     csv_data = df_clean.to_csv(index=False).encode("utf-8")
-    st.download_button(
+    st.sidebar.download_button(
         "Download CSV",
         data=csv_data,
         file_name=f"{option}_cleaned.csv",
@@ -138,7 +138,7 @@ def generate_pdf_report(
         df_clean.to_excel(writer, index=False)
     excel_buffer.seek(0)
 
-    st.download_button(
+    st.sidebar.download_button(
         "Download Excel",
         data=excel_buffer,
         file_name=f"{option}_cleaned.xlsx",
@@ -149,7 +149,7 @@ def generate_pdf_report(
     # JSON
     # --------------------------------------------------
     json_data = df_clean.to_json(orient="records")
-    st.download_button(
+    st.sidebar.download_button(
         "Download JSON",
         data=json_data,
         file_name=f"{option}_cleaned.json",

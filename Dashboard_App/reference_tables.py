@@ -1,6 +1,6 @@
 # reference tables tab
 
-import Dashboard_App as st
+import streamlit as st
 import pandas as pd
 
 
