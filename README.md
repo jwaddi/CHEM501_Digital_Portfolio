@@ -26,6 +26,8 @@ The dashboard is designed to be robust, reproducible, and extendable, following 
 
 # Streamlit Dashboard
 
+## Common Issues
+
 1. Ensure you are running your dashboard code in the correct file directory
 
 You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
@@ -64,7 +66,7 @@ To view Stuffy_Study_Master.db please download the DB browser for SQLite.
 * <3
 
 # Authors 
-### Josh and Kinga 
+### J. Waddington and K. A. Dabrowska 
 CHEM501 Digital Chemistry
 University of Liverpool
 December 2025
