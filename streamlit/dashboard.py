@@ -245,11 +245,11 @@ with tab2:
             st.pyplot(fig2)
 
 # -----------------------------------------------------
-# TAB 3 - Statistics Summary (from stats_utils.py)
+# TAB 3 - Statistics Summary (from stats_util.py)
 # -----------------------------------------------------
 
 with tab3:
-    stats_utils.render_statistics_tab(selected_data, option, y_col)
+    stats_util.render_statistics_tab(selected_data, option, y_col)
 
 # -----------------------------------------------------
 # TAB 4 - Reference Table (from reference_tables.py)
