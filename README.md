@@ -170,7 +170,7 @@ Defines global Streamlit configuration.
 
 ## Running the Dashboard 
 
-1. Ensure the required Python libraries are installed before running the dashboard (see above).
+Ensure that the required Python libraries are installed before running the dashboard (see above).
 
 ### Starting the Dashboard
 
@@ -225,23 +225,13 @@ Uploaded CSV files are automatically standardised and split into individual sens
 ## Development Notes
 
 * All visualisation logic is isolated in plot_utils.py
-
 * All data logic is isolated in data_utils.py
-
 * The dashboard script acts only as an orchestrator
-
 * Modules can be extended independently without breaking the app
 
 
-# Academic Context 
-* Idk point one
-* Point Two
-* Point THree
-* Point Four
-* <3
-
 # Authors 
-### J. Waddington and K. A. Dabrowska 
+### K. A. Dabrowska and J. Waddington 
 CHEM501 Digital Chemistry
 University of Liverpool
 December 2025
