@@ -104,7 +104,9 @@ streamlit run "dashboard.py"
 ```
 This will take you to a localhost:8501 link where you can open your dashboard. If this doesn't open you can try to manually type in: 
 
-```http://localhost:8501```
+```arduino
+http://localhost:8501
+```
 
 
 
