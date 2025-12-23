@@ -1,1 +1,1 @@
-
+from .reporting_data import generate_pdf_report

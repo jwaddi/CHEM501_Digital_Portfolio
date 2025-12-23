@@ -25,7 +25,7 @@ from streamlit_autorefresh import st_autorefresh
 from Dashboard_App import data_utils
 from Dashboard_App import plot_utils
 from Dashboard_App import theme_toggle
-from Dashboard_App import data_reports
+from Dashboard_App import reporting_data
 from Dashboard_App import live_tracking
 from Dashboard_App import reference_tables
 from Dashboard_App import stats_util
@@ -300,13 +300,13 @@ with tab5:
     st.pyplot(fig_clean)
 
 # --------------------------------------------------
-# TAB 6 - Download Data (from data_reports.py)
+# TAB 6 - Download Data (from reporting_data.py)
 # --------------------------------------------------
 
 with tab6:
     st.subheader("Download Data")
 
-    data_reports.generate_pdf_report(
+    reporting_data.generate_pdf_report(
         option=option,
         data_dict=data_dict,
         df_clean=df_clean,

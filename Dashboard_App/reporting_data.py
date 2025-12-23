@@ -1,4 +1,4 @@
-# data_reports.py
+# reporting_data.py
 # PDF report generation and data export utilities
 
 import matplotlib.pyplot as plt
@@ -108,9 +108,8 @@ def generate_pdf_report(
     # --------------------------------------------------
     # PDF download
     # --------------------------------------------------
-    pdf_buffer = io.BytesIO()
-    pdf.output(pdf_buffer)
-    pdf_buffer.seek(0)
+    pdf_bytes = pdf.output(dest="S").encode("latin-1")
+    pdf_buffer = io.BytesIO(pdf_bytes)
 
     st.sidebar.download_button(
         "Download PDF Report",

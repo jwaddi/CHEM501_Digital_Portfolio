@@ -10,7 +10,7 @@ def theme_selector():
     """
     return st.sidebar.radio(
         "Theme",
-        ["Light", "Dark"],
+        ["Dark", "Light"],
         index=0
     )
 
