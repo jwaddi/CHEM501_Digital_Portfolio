@@ -214,12 +214,17 @@ Uploaded CSV files are automatically standardised and split into individual sens
 ### ModuleNotFoundError: No module named 'streamlit'
 * Go to Anaconda Prompt
 * Activate the enviornment by writing in
- ```python
+ ```bash
  conda activate streamlitenv
 ```
 * Install packages written above or copy-paste the following:
- ```python
+ ```bash
 pip install streamlit pandas numpy matplotlib scipy fpdf pillow streamlit-autorefresh
+```
+* Run the dashboard:
+```bash
+cd path\to\CHEM501_Digital_Portfolio\streamlit
+streamlit run dashboard.py
 ```
 
 ### Theme not applying correctly 
