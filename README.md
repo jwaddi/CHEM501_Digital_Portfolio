@@ -81,9 +81,9 @@ This project uses a number of external libraries. Please read through the follow
 ### For running data visualisation:
 
 1. Pandas - Used for loading, cleaning, manipulating, and analysing tabular sensor data (CSV files).
-'''python
+```python
 pip install pandas
-'''
+
 3. Matplotlib - Used for generating time-series plots, comparison charts, and cleaned versus raw data visualisations.
 
      pip install matplotlib
