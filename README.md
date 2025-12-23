@@ -215,11 +215,12 @@ Uploaded CSV files are automatically standardised and split into individual sens
 * Go to Anaconda Prompt
 * Activate the enviornment by writing in
  ```python
- conda activate streamlitenv```
-* Install packages written above or:
+ conda activate streamlitenv
+```
+* Install packages written above or copy-paste the following:
  ```python
-pip install streamlit pandas numpy matplotlib scipy fpdf pillow streamlit-autorefresh```
-
+pip install streamlit pandas numpy matplotlib scipy fpdf pillow streamlit-autorefresh
+```
 
 ### Theme not applying correctly 
 * Confirm `config.toml` is inside `.streamlit` folder.
