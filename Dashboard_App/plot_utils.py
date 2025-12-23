@@ -1,8 +1,11 @@
 # plot_utils.py
 # All plotting logic for the dashboard
 
+from click import option
 import matplotlib.pyplot as plt
 import pandas as pd
+
+from data_utils import thresholds, iaq_thresholds, DISPLAY_TO_SENSOR, is_anomaly
 
 
 def plot_main_chart(
@@ -19,9 +22,11 @@ def plot_main_chart(
     line, and optional time-point marker.
     """
     fig, ax = plt.subplots()
+    # Resolve sensor key
+    sensor_key = DISPLAY_TO_SENSOR.get(option)
 
     # ---------------------------------------------
-    # Main plot
+    # Main plot of data
     # ---------------------------------------------
     if option == "Overview":
         for col in selected_data.columns[1:]:
@@ -36,47 +41,48 @@ def plot_main_chart(
         ax.plot(
             selected_data["Time (s)"],
             selected_data[y_col],
-            marker="o",
-            markersize=3
+            linewidth=1.5
         )
+
+# --------------------------------------------------
+# Drawing both threshold lines
+# --------------------------------------------------
+    if sensor_key:
+        if sensor_key == "IAQ":
+            low, high = iaq_thresholds[0], iaq_thresholds[2]
+        elif sensor_key in thresholds:
+            low, high = thresholds[sensor_key]
+        else:
+            low, high = None, None
+
+        if low is not None and high is not None:
+            ax.axhline(low, linestyle="--", linewidth=1, color="gray")
+            ax.axhline(high, linestyle="--", linewidth=1, color="gray")
 
         # -----------------------------------------
         # Anomaly detection
         # -----------------------------------------
-        for _, row in selected_data.iterrows():
-            val = row[y_col]
-            t = row["Time (s)"]
+    anomaly_x = []
+    anomaly_y = []
 
-            if option in thresholds:
-                low, high = thresholds[option]
-                if val < low or val > high:
-                    ax.plot(
-                        t, val,
-                        marker="o",
-                        linestyle="None",
-                        markersize=4,
-                        color="#9D00FF"
-                    )
+    for _, row in selected_data.iterrows():
+        time = row["Time (s)"]
+        val = row[y_col]
 
-            if option == "IAQ" and val > iaq_thresholds[-1]:
-                ax.plot(
-                    t, val,
-                    marker="o",
-                    linestyle="None",
-                    markersize=4,
-                    color="#9D00FF"
-                )
+        if is_anomaly:
+            anomaly_x.append(time)
+            anomaly_y.append(val)
 
-    # ---------------------------------------------
-    # Threshold line
-    # ---------------------------------------------
-    if threshold_value is not None:
-        ax.axhline(
-            threshold_value,
-            color="gray",
-            linestyle="--",
-            linewidth=1
+        if anomaly_x:
+            ax.scatter(
+            anomaly_x,
+            anomaly_y,
+            color="#9D00FF",
+            s=35,
+            zorder=10,
+            label="Anomaly"
         )
+
 
     # ---------------------------------------------
     # Time-point marker
@@ -98,6 +104,18 @@ def plot_main_chart(
         weight="bold",
         size=15
     )
+
+    if option != "Overview" and sensor_key:
+        if sensor_key == "IAQ":
+            low, high = iaq_thresholds[0], iaq_thresholds[2]
+        elif sensor_key in thresholds:
+            low, high = thresholds[sensor_key]
+        else:
+            low, high = None, None
+
+        if low is not None and high is not None:
+            ax.axhline(low, linestyle="--", linewidth=1, color="gray")
+            ax.axhline(high, linestyle="--", linewidth=1, color="gray")
 
     return fig
 

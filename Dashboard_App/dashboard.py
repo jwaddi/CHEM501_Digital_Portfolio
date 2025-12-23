@@ -190,20 +190,11 @@ with tab1:
 with tab2:
     st.subheader(f"{option} over Time Chart")
 
-    threshold_value = None
     time_point = None
 
     if option != "Overview" and pd.api.types.is_numeric_dtype(selected_data[y_col]):
         y_min = float(selected_data[y_col].min())
         y_max = float(selected_data[y_col].max())
-
-        st.sidebar.subheader("Safety Threshold")
-        threshold_value = st.sidebar.slider(
-            f"{y_col} Safety Threshold",
-            min_value=y_min,
-            max_value=y_max,
-            value=y_min + (y_max - y_min) / 2
-        )
 
         st.sidebar.subheader("Time Point Control")
         time_point = st.sidebar.slider(
@@ -220,7 +211,6 @@ with tab2:
         y_col=y_col,
         thresholds=data_utils.thresholds,
         iaq_thresholds=data_utils.iaq_thresholds,
-        threshold_value=threshold_value,
         time_point=time_point
     )
 
@@ -284,11 +274,12 @@ with tab5:
     )
 
     window_size = st.slider(
-        "Window size",
+        "Window size / polynomial order",
         min_value=3,
         max_value=21,
         step=2,
-        value=5
+        value=5,
+        key=f"smoothing_window_{smoothing_method}"
     )
 
     if smoothing_method == "Moving Average":

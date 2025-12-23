@@ -6,7 +6,19 @@ import numpy as np
 import streamlit as st
 
 # --------------------------------------------------
-# 1. Adding Live Data Tracking from CSV file
+# 1. DISPLAY NAME --> SENSOR COLUMN MAPPING
+# --------------------------------------------------
+
+DISPLAY_TO_SENSOR = {
+    "CO2 Levels (ppm)": "CO2_ppm",
+    "Temperature (°C)": "Temp_Comp_C",
+    "Humidity (%)": "Hum_Comp_pct",
+    "IAQ": "IAQ"
+}
+
+
+# --------------------------------------------------
+# 2. Adding Live Data Tracking from CSV file
 # ---------------------------------------------------
 def read_latest_csv(csv_path, tail=200):
     """
@@ -23,15 +35,13 @@ def read_latest_csv(csv_path, tail=200):
         return None
 
 # --------------------------------------------------
-# 2. CSV LOADING + STANDARDISATION
+# 3. CSV LOADING + STANDARDISATION
 # --------------------------------------------------
 
 def load_and_standardise_csv(path_or_buffer):
     """
     Load CSV file and standardise column names and types.
-    Matches behaviour of original dashboard script.
     """
-    # Skip metadata rows
     df = pd.read_csv(path_or_buffer, skiprows=4)
 
     expected_columns = [
@@ -50,9 +60,9 @@ def load_and_standardise_csv(path_or_buffer):
 
     missing = [c for c in expected_columns if c not in df.columns]
     if missing:
-        print(f"Warning: missing columns in CSV: {missing}")
+        st.warning(f"Missing columns in CSV: {missing}")
 
-    # Standardise time column
+    # Rename time column
     df = df.rename(columns={"Elapsed_Seconds": "Time (s)"})
 
     numeric_cols = [
@@ -70,9 +80,16 @@ def load_and_standardise_csv(path_or_buffer):
 
     for col in numeric_cols:
         if col in df.columns:
+            df[col] = (
+                df[col]
+                .astype(str)
+                .str.strip()
+                .replace("", pd.NA)
+            )
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
     return df
+
 
 
 def build_data_dict_from_csv(csv_df):
@@ -90,8 +107,42 @@ def build_data_dict_from_csv(csv_df):
 
     return data_dict
 
+
+# -------------------------------
+# 4. Adding Moving Data Average
+# -------------------------------
+
+
+def moving_average(df, col, window=5):
+    df[col] = df[col].rolling(
+        window=window,
+        center=True,
+        min_periods=1
+    ).mean()
+    return df
+
+# ------------------------------------------
+# 5. Adding Moving Savitzky-Golay Smoothing
+# ------------------------------------------
+
+def savgol_smoothing(df, col, window=5, polyorder=2):
+    """
+    Apply Savitzky-Golay smoothing to a dataframe column.
+    """
+    from scipy.signal import savgol_filter
+
+    if len(df[col]) >= window:
+        df[col] = savgol_filter(
+            df[col],
+            window_length=window,
+            polyorder=polyorder
+        )
+
+    return df
+
+
 # -------------------------------------------------------------------
-# 3. SIMULATED DATA (fallback in case no CSV file has been uploaded) 
+# 6. SIMULATED DATA (fallback in case no CSV file has been uploaded) 
 # -------------------------------------------------------------------
 
 def generate_data():
@@ -124,7 +175,7 @@ def generate_data():
     return data_dict
 
 # --------------------------------------------------
-# 4. THRESHOLDS + ANOMALY DETECTION
+# 7. THRESHOLDS + ANOMALY DETECTION
 # --------------------------------------------------
 
 thresholds = {
@@ -139,9 +190,19 @@ iaq_thresholds = (50, 100, 150, 200, 250, 300, 1000)
 
 
 def is_anomaly(var, val):
-    if var == "IAQ":
+    """
+    Determine whether a value is an anomaly based on thresholds.
+    Accepts either display names or sensor keys.
+    """
+    from data_utils import DISPLAY_TO_SENSOR
+
+    sensor_key = DISPLAY_TO_SENSOR.get(var, var)
+
+    if sensor_key == "IAQ":
         return val > iaq_thresholds[-1]
-    if var in thresholds:
-        low, high = thresholds[var]
+
+    if sensor_key in thresholds:
+        low, high = thresholds[sensor_key]
         return val < low or val > high
+
     return False
