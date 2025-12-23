@@ -6,7 +6,7 @@ from fpdf import FPDF
 from PIL import Image
 import pandas as pd
 import io
-import streamlit as st
+import Dashboard_App as st
 import matplotlib as mt
 
 

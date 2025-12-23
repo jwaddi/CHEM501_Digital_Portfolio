@@ -3,7 +3,7 @@
 
 import pandas as pd
 import numpy as np
-import streamlit as st
+import Dashboard_App as st
 
 # --------------------------------------------------
 # 1. Adding Live Data Tracking from CSV file
