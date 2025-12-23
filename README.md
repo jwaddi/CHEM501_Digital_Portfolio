@@ -69,6 +69,10 @@ pip install pillow
 ```python
 pip install streamlit-autorefresh
 ```
+9. openpyxl - Required for exporting cleaned data to Excel (.xlsx) format.
+```python
+pip install openpyxl
+```
 
 
 # Data Aquisition
