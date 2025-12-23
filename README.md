@@ -62,6 +62,7 @@ To view Stuffy_Study_Master.db please download the DB browser for SQLite.
 # Required Libraries
 
 1. Pandas - Used for loading, cleaning, manipulating, and analysing tabular sensor data (CSV files).
+
      pip install pandas
 3. Matplotlib - For creating static, animated, and interactive visualizations, such as graphs. To install: pip install matplotlib
 4. streamlit - For creating and manipulating the dashboard 
