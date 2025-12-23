@@ -32,11 +32,15 @@ The dashboard is designed to be robust, reproducible, and extendable, following 
 
 You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
 
-     cd "Your path directory"
+'''bash
+cd "Your path directory"
+'''
 
 Followed by 
 
+'''bash
 streamlit run "dashboard.py"
+''''
 
 This will take you to a localhost:8501 link where you can open your dashboard. 
 
@@ -79,14 +83,14 @@ This project uses a number of external libraries. Please read through the follow
 ### For running data visualisation:
 
 1. Pandas - Used for loading, cleaning, manipulating, and analysing tabular sensor data (CSV files).
-
-     pip install pandas#
-   
-2. Matplotlib - Used for generating time-series plots, comparison charts, and cleaned versus raw data visualisations.
+'''python
+pip install pandas
+'''
+3. Matplotlib - Used for generating time-series plots, comparison charts, and cleaned versus raw data visualisations.
 
      pip install matplotlib
    
-3. streamlit - The core framework used to build the interactive dashboard interface, including tabs, sliders, and live updates.
+4. streamlit - The core framework used to build the interactive dashboard interface, including tabs, sliders, and live updates.
 
 pip install streamlit
 
