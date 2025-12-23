@@ -227,6 +227,11 @@ cd path\to\CHEM501_Digital_Portfolio\streamlit
 streamlit run dashboard.py
 ```
 
+or  with 
+```bash
+-m streamlit run dashboard.py
+```
+
 ### Theme not applying correctly 
 * Confirm `config.toml` is inside `.streamlit` folder.
 * Ensure the folder name is exactly `.streamlit`, which includes the dot.
