@@ -91,7 +91,7 @@ This repository contains a modular Streamlit dashboard development for **The Stu
 The dashboard allows user to visualise, analyse, clean and export environmental sensor data collected from student study spaces.
 
 ## Module Overview 
-The Streamlit dashboard is organised into multiple Python modules to improve readability, maintainability and separation of concerns. Each module is responsible for a specific part of the dashboard functionality and they are all collated and called in the main `dashboard.py` file. 
+The Streamlit dashboard is organised into multiple Python modules to improve readability and maintainability of the code. Each module is responsible for a specific part of the dashboard functionality and they are all collated and called in the main `dashboard.py` file. 
 
 `dashboard.py`
 This is the main entry point for the application.
