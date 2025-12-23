@@ -66,17 +66,17 @@ This project uses a number of external libraries. Please read through the follow
 
 ### For data aquisiton: 
 1. ssssss
-
-     pip install ssssssss
-
+```python
+pip install ssssssss
+```
 2. kkkkkkkkkkkkk
-
-     pip install kkkkkkkkkkkk
-
+```python
+pip install kkkkkkkkkkkk
+```
 3. zzzzzzzzzzzzz
-
-     pip install zzzzzzzz
-
+```python
+pip install zzzzzzzz
+```
 
 ### For running data visualisation:
 
@@ -86,31 +86,31 @@ pip install pandas
 ```
 3. Matplotlib - Used for generating time-series plots, comparison charts, and cleaned versus raw data visualisations.
 ```python
-     pip install matplotlib
-   ```
+pip install matplotlib
+```
 4. streamlit - The core framework used to build the interactive dashboard interface, including tabs, sliders, and live updates.
 ```python
 pip install streamlit
 ```
 4. numpy - Provides numerical operations used for calculations, simulations, and data processing.
 ```python
-     pip install numpy
+pip install numpy
 ```
 5. scipy - Required for signal processing functions such as Savitzky–Golay smoothing.
 ```python
-     pip install scipy
+pip install scipy
 ```
 6. fpdf - Used to generate downloadable PDF reports directly from the dashboard.
 ```python
-     pip install fpdf
+pip install fpdf
 ```
 7. Pillow (PIL) - Handles image processing when embedding plots into PDF reports.
 ```python
-     pip install pillow
+pip install pillow
 ```
 8. streamlit-autorefresh - Enables automatic dashboard refresh when monitoring live sensor data from a continuously updating CSV file.
 ```python
-     pip install streamlit-autorefresh
+pip install streamlit-autorefresh
 ```
 # Academic Context 
 * Idk point one
