@@ -32,14 +32,14 @@ The dashboard is designed to be robust, reproducible, and extendable, following 
 
 You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
 
-'''bash
+```bash
 cd "Your path directory"
-'''
+```
 
 Followed by 
-
+```bash
 streamlit run "dashboard.py"
-
+```
 This will take you to a localhost:8501 link where you can open your dashboard. 
 
 2. When downloaded, ensure the config.toml file is in a separate folder named '.steamlit' in the same directory as the dashboard. 
@@ -83,35 +83,35 @@ This project uses a number of external libraries. Please read through the follow
 1. Pandas - Used for loading, cleaning, manipulating, and analysing tabular sensor data (CSV files).
 ```python
 pip install pandas
-
+```
 3. Matplotlib - Used for generating time-series plots, comparison charts, and cleaned versus raw data visualisations.
-
+```python
      pip install matplotlib
-   
+   ```
 4. streamlit - The core framework used to build the interactive dashboard interface, including tabs, sliders, and live updates.
-
+```python
 pip install streamlit
-
+```
 4. numpy - Provides numerical operations used for calculations, simulations, and data processing.
-
+```python
      pip install numpy
-
+```
 5. scipy - Required for signal processing functions such as Savitzky–Golay smoothing.
-
+```python
      pip install scipy
-
+```
 6. fpdf - Used to generate downloadable PDF reports directly from the dashboard.
-
+```python
      pip install fpdf
-
+```
 7. Pillow (PIL) - Handles image processing when embedding plots into PDF reports.
-
+```python
      pip install pillow
-
+```
 8. streamlit-autorefresh - Enables automatic dashboard refresh when monitoring live sensor data from a continuously updating CSV file.
-
+```python
      pip install streamlit-autorefresh
-
+```
 # Academic Context 
 * Idk point one
 * Point Two
