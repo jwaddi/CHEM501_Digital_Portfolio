@@ -21,46 +21,6 @@ This repository contains:
 
 The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
 
-
-
-
-# Streamlit Dashboard
-
-## Common Issues
-
-1. Ensure you are running your dashboard code in the correct file directory
-
-You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
-
-```bash
-cd "Your path directory"
-```
-
-Followed by 
-```bash
-streamlit run "dashboard.py"
-```
-This will take you to a localhost:8501 link where you can open your dashboard. 
-
-2. When downloaded, ensure the config.toml file is in a separate folder named '.steamlit' in the same directory as the dashboard. 
-
-
-
-Data: 
-To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
-
-
-## Development Notes
-
-* All visualisation logic is isolated in plot_utils.py
-
-* All data logic is isolated in data_utils.py
-
-* The dashboard script acts only as an orchestrator
-
-* Modules can be extended independently without breaking the app
-
-
 # Required Libraries
 This project uses a number of external libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
 
@@ -112,6 +72,50 @@ pip install pillow
 ```python
 pip install streamlit-autorefresh
 ```
+
+
+# Data Aquisition
+Data: 
+To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
+
+
+# Streamlit Dashboard
+This repository contains a modular Streamlit dashboard development for **The Stuffy Study**. 
+
+The dashboard allows user to visualise, analyse, clean and export environmental sensor data collected from student study spaces.
+
+## Running the Dashboard 
+
+1. Ensure the required Python libraries are installed before running the dashboard (see above). 
+
+1. Ensure you are running your dashboard code in the correct file directory
+
+You can do this by selecting 'Copy Relative Path' of the dashboard file and deleting the file from the end.
+
+```bash
+cd "Your path directory"
+```
+
+Followed by 
+```bash
+streamlit run "dashboard.py"
+```
+This will take you to a localhost:8501 link where you can open your dashboard. 
+
+2. When downloaded, ensure the config.toml file is in a separate folder named '.steamlit' in the same directory as the dashboard. 
+
+
+## Development Notes
+
+* All visualisation logic is isolated in plot_utils.py
+
+* All data logic is isolated in data_utils.py
+
+* The dashboard script acts only as an orchestrator
+
+* Modules can be extended independently without breaking the app
+
+
 # Academic Context 
 * Idk point one
 * Point Two
