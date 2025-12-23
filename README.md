@@ -1,8 +1,5 @@
 # CHEM501_Digital_Portfolio
 
-
-A good README should include a brief overview section with a paragraph or two explaining what the software does, how it works, and who made it.
-
 # Project Overview
 
 The Stuffy Study investigates the ventilation and learning environment in student study spaces using real-time environmental sensing and interactive data visualisation.
