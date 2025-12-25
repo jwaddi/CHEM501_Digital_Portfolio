@@ -18,6 +18,25 @@ This repository contains:
 
 The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
 
+# Cloning the Repository
+
+To clone this repository to your local machine, follow the steps below:
+
+Step 1: Copy the Repository URL: 
+`https://github.com/jwaddi/CHEM501_Digital_Portfolio`
+
+Step 2: Open your terminal (or Git Bash on Windows). 
+
+Step 3: Navigate to the directory where you want to save the project. 
+Example: cd Documents
+
+Step 4: Run the following command to clone the repository:
+```bash
+git clone https://github.com/jwaddi/CHEM501_Digital_Portfolio.git
+```
+
+Once the command completes, you will have a local copy of the repository in a new folder. Ensure all necessary software and libraries are installed before attempting to run the code.
+
 # Required Libraries
 This project utilises a number of external as well as built-in libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
 
