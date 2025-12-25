@@ -157,6 +157,18 @@ Follow these steps to configure the hardware and start the logging process:
 * **Upload Firmware**: Use the Arduino IDE to upload `Nicla_Sense_ME_Sensor_Reader.ino` to the Arduino Nicla Sense ME and `MKR_WiFi_Data_Transmitter.ino` to the Arduino MKR WiFi 1010.
 * **Start Data Logging**: Once the boards are connected and powered, run the `Stuffy_Study_Data_Logger.py` script to begin recording data to the dashboard files.
 
+# Data Collection Methodology
+
+To ensure reproducible results during the Stuffy Study, the following experimental methodology was followed:
+
+* **Hardware Integration**: The Arduino Nicla Sense ME was connected to the Arduino MKR WiFi 1010 using a physical ESLOV (I2C) cable.
+* **Firmware Deployment**: The `Nicla_Sense_ME_Sensor_Reader.ino` was uploaded to the sensing device, and `MKR_WiFi_Data_Transmitter.ino` was uploaded to the gateway device.
+* **Network Synchronisation**: The MKR WiFi 1010 was configured via `arduino_secrets.h` to connect to a mobile hotspot, allowing for portable, untethered data collection in various study pods.
+* **Environmental Sampling**: Sensors were placed at desk height within the study space to capture the air quality most relevant to the occupant.
+* **Data Logging Protocol**: The `Stuffy_Study_Data_Logger.py` script was launched on a local machine. At the start of each session, the specific location (e.g., "Library Pod 1") was entered to tag the metadata.
+* **Recording Duration**: Data was captured at a continuous 1Hz frequency for the duration of the study session.
+* **Storage and Archiving**: High-resolution telemetry was simultaneously written to a session-specific CSV for immediate dashboard analysis and appended to the master `Stuffy_Study_Master.db` for long-term historical comparison.
+
 # Streamlit Dashboard
 This repository contains a modular Streamlit dashboard development for **The Stuffy Study**. 
 
@@ -167,7 +179,7 @@ The Streamlit dashboard is organised into multiple Python modules to improve rea
 
 `dashboard.py`
 This is the main entry point for the application.
-* It orchastrates all the modules and renders the Streamlit interface.
+* It orchestrates all the modules and renders the Streamlit interface.
 * It handles sidebar controls, tab layout and user interaction.
 * It connects data loading, plotting, statistics, live tracking and reporting into a single dashboard.
 * Should be run using `streamlit run "dashboard.py"` (see notes below in `Starting the Dashboard`).
