@@ -12,15 +12,23 @@ This repository contains:
 
 * a Streamlit dashboard for data exploration, cleaning, visualisation, and reporting
 
-* a modular Python architecture separating data handling, plotting, theming, reporting, and reference information
+* A modular Python architecture separating data handling, plotting, theming, reporting, and reference information
 
-* support for live sensor data, uploaded CSV datasets, and simulated fallback data
+* Support for live sensor data, uploaded CSV datasets, and simulated fallback data
 
 The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
 
 ## Motivation
 
 Indoor air quality (IAQ) is a critical factor in student productivity and long-term health, yet study spaces like library pods have been reported to be poorly ventilated. The primary motivation for this project is to quantify how air quality changes over time in enclosed study environments. By monitoring CO<sub>2</sub> and VOC levels in real-time, we aim to identify the specific "tipping points" where air becomes stagnant, providing data-driven evidence for how long a student should safely occupy a pod before requiring a ventilation break.
+
+## FAIR Data Principles
+
+This repositiory is designed in accordance with the FAIR data principles [(Findable, Accessible, Interoperable, Reusable):](https://www.go-fair.org/fair-principles/)
+* **Findable** - The project is fully documented with descriptive metadata, consistent file naming, and a clear repository structure
+* **Accessible** - All code is openly available under an MIT licence, and datasets are stored in standard, non-proprietary formats
+* **Interoperable** - Data are provided as CSV and SQLite files with defined schemas, units, and timestamps
+* **Reusable** - Clear documentation, modular design, version control, and licensing enable reuse and extension of the work
 
 ## Cloning the Repository
 
