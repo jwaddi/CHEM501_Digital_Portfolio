@@ -79,30 +79,34 @@ pip install openpyxl
 ```
 
 
-# Data Aquisition
-Data: 
-To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
+# Data Acquisition & System Design
 
-### Database files 
-To view the master database file: 
-* File name: `Stuffy_Study_Master.db`
-* Recommended tool: DB Browser for SQLite
+The project employs two microcontrollers to handle separate tasks: high-frequency environmental sensing and wireless data transmission.
 
-This database contains all recorded sensor data across sessions. 
+### 1. Hardware Communication 
+* Sensing Node: An Arduino Nicla Sense ME captures raw environmental data via the Bosch BME688 AI-integrated sensor.
+* Connectivity Gateway: Data is transmitted to an Arduino MKR WiFi 1010 via the ESLOV (I2C) interface.
+* Sampling Rate: Firmware is configured to sample at 1Hz, providing high-resolution granularity to capture rapid indoor air quality shifts.
 
-### Guidance for using the SQLite Database 
-The tables can be viewed from the *Browse Data tab*, followed by choosing the desired table from the drop down menu just under the tabs. 
+### 2. Data Flow & Storage
+The MKR WiFi 1010 acts as an MQTT client, publishing data payloads to the broker. A background Python logger subscribes to these streams and saves the data in two ways:
+* Session Logging: Data is appended to a session-specific .csv file for immediate ingestion and visualisation by the Streamlit dashboard.
+* Master Archiving: Records are simultaneously committed to a Master SQL Database (Stuffy_Study_Master.db). This ensures data is safely stored and allows for more efficient historical querying compared to flat text files.
 
-The *Database Structure* tab provides a general overview of the tables inside the database. 
+### 3. Database Management & Data Retrieval
+To inspect the historical archives, it is recommended to use DB Browser for SQLite.
 
-If you wish to find a specific location, time or value please use ctrl (or command on Macbooks) + f and search for the desired variable. 
-
-You can search for specific values using the binoculars and document icon in the same tabe as the table drop down menu. Once that is selected, you can then type in any specific value you are looking for. 
+* File Name: Stuffy_Study_Master.db
+* Viewing Tables: Navigate to the Browse Data tab and select the desired table from the drop-down menu.
+* Database Structure: Use the Database Structure tab for a general overview of the table schemas.
+* Finding Specific Data: 
+    * To find a specific location, time, or sensor value, use Ctrl+F (or Cmd+F on macOS) within the Browse Data tab.
+    * For more advanced searches, click the binoculars icon to open the filter menu. This allows you to type in specific values to isolate data points from particular experimental sessions or environmental conditions. 
 
 # Streamlit Dashboard
 This repository contains a modular Streamlit dashboard development for **The Stuffy Study**. 
 
-The dashboard allows user to visualise, analyse, clean and export environmental sensor data collected from student study spaces.
+The dashboard allows the user to visualise, analyse, clean and export environmental sensor data collected from student study spaces.
 
 ## Module Overview 
 The Streamlit dashboard is organised into multiple Python modules to improve readability and maintainability of the code. Each module is responsible for a specific part of the dashboard functionality and they are all collated and called in the main `dashboard.py` file. 
