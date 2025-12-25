@@ -6,9 +6,9 @@ The Stuffy Study investigates the ventilation and learning environment in studen
 
 This repository contains:
 
-* SOMETHING ABOUT DATA COLLECTION
+* arduino code for data aquisition, including wireless transmission using mqtt
 
-* SOMETHING ABOUT DATA COLLECTION #2
+* python architecture, which connects the project's cloud data stream, buffer incoming sensor readings from the MKR WiFi 1010, displays live metrics to the console and persists the full dataset to both a session-specific CSV file and a master SQL database. 
 
 * a Streamlit dashboard for data exploration, cleaning, visualisation, and reporting
 
@@ -83,6 +83,13 @@ pip install openpyxl
 Data: 
 To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
 
+### Database files 
+To view the master database file: 
+* File name: `Stuffy_Study_Master.db`
+* Recommended tool: DB Browser for SQLite
+
+This database contains all recorded sensor data across sessions. 
+
 ### Guidance for using the SQLite Database 
 The tables can be viewed from the *Browse Data tab*, followed by choosing the desired table from the drop down menu just under the tabs. 
 
@@ -91,14 +98,6 @@ The *Database Structure* tab provides a general overview of the tables inside th
 If you wish to find a specific location, time or value please use ctrl (or command on Macbooks) + f and search for the desired variable. 
 
 You can search for specific values using the binoculars and document icon in the same tabe as the table drop down menu. Once that is selected, you can then type in any specific value you are looking for. 
-
-### Database files 
-To view the master database file: 
-* File name: `Stuffy_Study_Master.db`
-* Recommended tool: DB Browser for SQLite
-
-This database contains all recorded sensor data across sessions. 
-
 
 # Streamlit Dashboard
 This repository contains a modular Streamlit dashboard development for **The Stuffy Study**. 
