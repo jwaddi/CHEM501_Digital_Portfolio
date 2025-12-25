@@ -170,7 +170,7 @@ This is the main entry point for the application.
 * It orchastrates all the modules and renders the Streamlit interface.
 * It handles sidebar controls, tab layout and user interaction.
 * It connects data loading, plotting, statistics, live tracking and reporting into a single dashboard.
-* Should be run using `streamlit run dashboard.py` (see notes below in `Starting the Dashboard`).
+* Should be run using `streamlit run "dashboard.py"` (see notes below in `Starting the Dashboard`).
 
 `data_utils.py`
 Handles all data-related operations. 
