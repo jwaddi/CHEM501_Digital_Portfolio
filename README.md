@@ -91,7 +91,7 @@ The project utilises two microcontrollers to handle separate tasks: high-frequen
 ### 2. Data Flow & Storage
 The MKR WiFi 1010 acts as an MQTT client, sending data payloads to the server. A background Python logger monitors to these streams and saves the data in two ways:
 * Session Logging: Data is added to a session-specific .csv file for immediate processing and visualisation by the Streamlit dashboard.
-* Master Archiving: Records are simultaneously committed to a Master SQL Database (Stuffy_Study_Master.db). This ensures data is safely stored and allows for more efficient historical querying compared to flat text files.
+* Master Archiving: Records are simultaneously committed to a Master SQL Database ('Stuffy_Study_Master.db'). This ensures data is safely stored and allows for more efficient historical querying compared to flat text files.
 
 ### 3. Database Management & Data Retrieval
 To inspect the historical archives, it is recommended to use DB Browser for SQLite.
@@ -101,7 +101,16 @@ To inspect the historical archives, it is recommended to use DB Browser for SQLi
 * Database Structure: Use the Database Structure tab for a general overview of the table schemas.
 * Finding Specific Data: 
     * To find a specific location, time, or sensor value, use Ctrl+F (or Cmd+F on macOS) within the Browse Data tab.
-    * For more advanced searches, click the binoculars icon to open the filter menu. This allows you to type in specific values to isolate data points from particular experimental sessions or environmental conditions. 
+    * For more advanced searches, click the binoculars icon to open the filter menu. This allows you to type in specific values to isolate data points from particular experimental sessions or environmental conditions.
+ 
+### 4. Setup and Usage
+Follow these steps to configure the hardware and start the logging process:
+
+* **Configure Credentials**: Open `arduino_secrets.h` and enter your WiFi and MQTT broker details. These credentials are required for the MKR WiFi 1010 to connect to the network.
+* **Upload Firmware**: Use the Arduino IDE to upload `Nicla_Sense_ME_Sensor_Reader.ino` to the Arduino Nicla Sense ME and `MKR_WiFi_Data_Transmitter.ino` to the Arduino MKR WiFi 1010.
+* **Start Data Logging**: Once the boards are connected and powered, run the `Stuffy_Study_Data_Logger.py` script to begin recording data to the dashboard files:
+```bash
+python Stuffy_Study_Data_Logger.py
 
 # Streamlit Dashboard
 This repository contains a modular Streamlit dashboard development for **The Stuffy Study**. 
