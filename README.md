@@ -81,16 +81,16 @@ pip install openpyxl
 
 # Data Acquisition & System Design
 
-The project employs two microcontrollers to handle separate tasks: high-frequency environmental sensing and wireless data transmission.
+The project utilises two microcontrollers to handle separate tasks: high-frequency environmental sensing and wireless data transmission.
 
 ### 1. Hardware Communication 
 * Sensing Node: An Arduino Nicla Sense ME captures raw environmental data via the Bosch BME688 AI-integrated sensor.
 * Connectivity Gateway: Data is transmitted to an Arduino MKR WiFi 1010 via the ESLOV (I2C) interface.
-* Sampling Rate: Firmware is configured to sample at 1Hz, providing high-resolution granularity to capture rapid indoor air quality shifts.
+* Sampling Rate: Firmware is configured to sample at 1Hz, providing high-resolution detail to capture rapid changes in indoor air quality.
 
 ### 2. Data Flow & Storage
-The MKR WiFi 1010 acts as an MQTT client, publishing data payloads to the broker. A background Python logger subscribes to these streams and saves the data in two ways:
-* Session Logging: Data is appended to a session-specific .csv file for immediate ingestion and visualisation by the Streamlit dashboard.
+The MKR WiFi 1010 acts as an MQTT client, sending data payloads to the server. A background Python logger monitors to these streams and saves the data in two ways:
+* Session Logging: Data is added to a session-specific .csv file for immediate processing and visualisation by the Streamlit dashboard.
 * Master Archiving: Records are simultaneously committed to a Master SQL Database (Stuffy_Study_Master.db). This ensures data is safely stored and allows for more efficient historical querying compared to flat text files.
 
 ### 3. Database Management & Data Retrieval
