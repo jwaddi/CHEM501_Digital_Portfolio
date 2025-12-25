@@ -21,23 +21,26 @@ The dashboard is designed to be robust, reproducible, and extendable, following 
 # Required Libraries
 This project utilises a number of external as well as built-in libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
 
-### For data aquisiton: 
-1. paho.mqtt.client
+### For data acquisition (Python & Hardware):
+
+1. **Built-in Python Modules**
+The following libraries are included with Python by default and do not require separate installation:
+* `csv`
+* `os`
+* `sqlite3`
+* `datetime`
+
+2. **External Python Packages**
+The Python data logger requires the Paho MQTT client to receive wireless sensor data. Install it using:
 ```bash
-pip install paho.mqtt.client
+pip install paho-mqtt
 ```
-2. csv
-```bash
-pip install csv
-```
-3. os
-```bash
-pip install os
-```
-4. sqlite3
-```bash
-pip install sqlite3
-```
+4. **Arduino Libraries**
+To compile and upload the firmware to the microcontrollers, the following libraries must be installed via the Arduino IDE Library Manager:
+* `Arduino_BHY2` Required for the Nicla Sense ME
+* `WiFiNINA` Required for the MKR WiFi 1010
+* `ArduinoMqttClient` Required for MQTT wireless transmission
+
 
 ### For running data visualisation:
 
