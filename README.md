@@ -22,55 +22,59 @@ The dashboard is designed to be robust, reproducible, and extendable, following 
 This project utilises a number of external as well as built-in libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
 
 ### For data aquisiton: 
-1. ssssss
-```python
-pip install ssssssss
+1. paho.mqtt.client
+```bash
+pip install paho.mqtt.client
 ```
-2. kkkkkkkkkkkkk
-```python
-pip install kkkkkkkkkkkk
+2. csv
+```bash
+pip install csv
 ```
-3. zzzzzzzzzzzzz
-```python
-pip install zzzzzzzz
+3. os
+```bash
+pip install os
+```
+4. sqlite3
+```bash
+pip install sqlite3
 ```
 
 ### For running data visualisation:
 
 1. Pandas - Used for loading, cleaning, manipulating, and analysing tabular sensor data (CSV files).
-```python
+```bash
 pip install pandas
 ```
 3. Matplotlib - Used for generating time-series plots, comparison charts, and cleaned versus raw data visualisations.
-```python
+```bash
 pip install matplotlib
 ```
 4. streamlit - The core framework used to build the interactive dashboard interface, including tabs, sliders, and live updates.
-```python
+```bash
 pip install streamlit
 ```
 4. numpy - Provides numerical operations used for calculations, simulations, and data processing.
-```python
+```bash
 pip install numpy
 ```
 5. scipy - Required for signal processing functions such as Savitzky–Golay smoothing.
-```python
+```bash
 pip install scipy
 ```
 6. fpdf - Used to generate downloadable PDF reports directly from the dashboard.
-```python
+```bash
 pip install fpdf
 ```
 7. Pillow (PIL) - Handles image processing when embedding plots into PDF reports.
-```python
+```bash
 pip install pillow
 ```
 8. streamlit-autorefresh - Enables automatic dashboard refresh when monitoring live sensor data from a continuously updating CSV file.
-```python
+```bash
 pip install streamlit-autorefresh
 ```
 9. openpyxl - Required for exporting cleaned data to Excel (.xlsx) format.
-```python
+```bash
 pip install openpyxl
 ```
 
@@ -79,7 +83,14 @@ pip install openpyxl
 Data: 
 To view Stuffy_Study_Master.db please download the DB browser for SQLite. 
 
+### Guidance for using the SQLite Database 
+The tables can be viewed from the *Browse Data tab*, followed by choosing the desired table from the drop down menu just under the tabs. 
 
+The *Database Structure* tab provides a general overview of the tables inside the database. 
+
+If you wish to find a specific location, time or value please use ctrl (or command on Macbooks) + f and search for the desired variable. 
+
+You can search for specific values using the binoculars and document icon in the same tabe as the table drop down menu. Once that is selected, you can then type in any specific value you are looking for. 
 
 ### Database files 
 To view the master database file: 
