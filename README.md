@@ -20,7 +20,7 @@ The dashboard is designed to be robust, reproducible, and extendable, following 
 
 ## Motivation
 
-Indoor air quality (IAQ) is a critical factor in student productivity and long-term health, yet study spaces like library pods have been reported to be poorly ventilated. The primary motivation for this project is to quantify how air quality changes over time in enclosed study environments. By monitoring CO<sup>2</sup>  and VOC levels in real-time, we aim to identify the specific "tipping points" where air becomes stagnant, providing data-driven evidence for how long a student should safely occupy a pod before requiring a ventilation break.
+Indoor air quality (IAQ) is a critical factor in student productivity and long-term health, yet study spaces like library pods have been reported to be poorly ventilated. The primary motivation for this project is to quantify how air quality changes over time in enclosed study environments. By monitoring CO<sub>2</sub> and VOC levels in real-time, we aim to identify the specific "tipping points" where air becomes stagnant, providing data-driven evidence for how long a student should safely occupy a pod before requiring a ventilation break.
 
 ## Cloning the Repository
 
@@ -76,7 +76,7 @@ The following libraries are included with Python by default and do not require s
 * `datetime`
 
 2. **External Python Packages**
-The Python data logger requires the Paho MQTT client to receive wireless sensor data. Install it using:
+Paho MQTT client - Required by the Python data logger to receive wireless sensor data.
 ```bash
 pip install paho-mqtt
 ```
@@ -85,7 +85,6 @@ To compile and upload the firmware to the microcontrollers, the following librar
 * `Arduino_BHY2` Required for the Nicla Sense ME
 * `WiFiNINA` Required for the MKR WiFi 1010
 * `ArduinoMqttClient` Required for MQTT wireless transmission
-
 
 
 ### For running data visualisation:
@@ -126,7 +125,6 @@ pip install streamlit-autorefresh
 ```bash
 pip install openpyxl
 ```
-
 
 # Data Acquisition & System Design
 
