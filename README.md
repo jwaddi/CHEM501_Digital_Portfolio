@@ -42,6 +42,7 @@ To compile and upload the firmware to the microcontrollers, the following librar
 * `ArduinoMqttClient` Required for MQTT wireless transmission
 
 
+
 ### For running data visualisation:
 
 1. Pandas - Used for loading, cleaning, manipulating, and analysing tabular sensor data (CSV files).
