@@ -80,7 +80,7 @@ The Python data logger requires the Paho MQTT client to receive wireless sensor 
 ```bash
 pip install paho-mqtt
 ```
-4. **Arduino Libraries**
+3. **Arduino Libraries**
 To compile and upload the firmware to the microcontrollers, the following libraries must be installed via the Arduino IDE Library Manager:
 * `Arduino_BHY2` Required for the Nicla Sense ME
 * `WiFiNINA` Required for the MKR WiFi 1010
@@ -140,12 +140,12 @@ The project utilises two microcontrollers to handle separate tasks: high-frequen
 ### 2. Data Flow & Storage
 The MKR WiFi 1010 acts as an MQTT client, sending data payloads to the server. A background Python logger monitors to these streams and saves the data in two ways:
 * Session Logging: Data is added to a session-specific .csv file for immediate processing and visualisation by the Streamlit dashboard.
-* Master Archiving: Records are simultaneously committed to a Master SQL Database ('Stuffy_Study_Master.db'). This ensures data is safely stored and allows for more efficient historical querying compared to flat text files.
+* Master Archiving: Records are simultaneously committed to a Master SQL Database (`Stuffy_Study_Master.db`). This ensures data is safely stored and allows for more efficient historical querying compared to flat text files.
 
 ### 3. Database Management & Data Retrieval
 To inspect the historical archives, it is recommended to use DB Browser for SQLite.
 
-* File Name: Stuffy_Study_Master.db
+* File Name: `Stuffy_Study_Master.db`
 * Viewing Tables: Navigate to the Browse Data tab and select the desired table from the drop-down menu.
 * Database Structure: Use the Database Structure tab for a general overview of the table schemas.
 * Finding Specific Data: 
