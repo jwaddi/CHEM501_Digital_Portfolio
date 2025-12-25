@@ -18,7 +18,11 @@ This repository contains:
 
 The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
 
-# Cloning the Repository
+# Motivation
+
+Indoor air quality (IAQ) is a critical factor in student productivity and long-term health, yet study spaces like library pods are often poorly ventilated. The primary motivation for this project is to quantify how quickly air quality degrades in enclosed study environments. By monitoring CO2 and VOC levels in real-time, we aim to identify the specific "tipping points" where air becomes stagnant, providing data-driven evidence for how long a student should safely occupy a pod before requiring a ventilation break.
+
+## Cloning the Repository
 
 To clone this repository to your local machine, follow the steps below:
 
@@ -36,6 +40,28 @@ git clone https://github.com/jwaddi/CHEM501_Digital_Portfolio.git
 ```
 
 Once the command completes, you will have a local copy of the repository in a new folder. Ensure all necessary software and libraries are installed before attempting to run the code.
+
+# Software Installation Instructions
+
+### 1. Arduino IDE Setup
+To compile and upload the firmware for the Nicla Sense ME and MKR WiFi 1010, you must install the Arduino IDE:
+* **Download**: Visit the [Arduino Software page](https://www.arduino.cc/en/software) and download the version for your OS.
+* **Board Support**: Open the IDE and go to **Tools -> Board -> Boards Manager**. Search for and install:
+    * `Arduino Mbed OS Nicla Boards`
+    * `Arduino SAMD Boards (32-bits ARM Cortex-M0+)`
+* **Configuration**: 
+    * For the **Nicla Sense ME**, select the board under `Arduino Mbed OS Nicla Boards`.
+    * For the **MKR WiFi 1010**, select the board under `Arduino SAMD Boards`.
+
+### 2. Visual Studio Code & Python Setup
+For running the `Stuffy_Study_Data_Logger.py` script and the Streamlit dashboard:
+* **VS Code**: Download from the [official site](https://code.visualstudio.com/).
+* **Python**: Ensure Python 3.9+ is installed.
+* **Extensions**: Within VS Code, install the **Python Extension** by Microsoft.
+* **Interpreter**: Open the Command Palette (`Ctrl+Shift+P`), type `Python: Select Interpreter`, and choose your installed version.
+
+### 3. Database Browser
+To view the archived data in `Stuffy_Study_Master.db` without using code, download the [DB Browser for SQLite](https://sqlitebrowser.org/).
 
 # Required Libraries
 This project utilises a number of external as well as built-in libraries. Please read through the following and ensure that they are installed on your device to be able to run the code packages. 
