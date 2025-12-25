@@ -1,4 +1,4 @@
-# CHEM501_Digital_Portfolio
+# The Stuffy Study: A Digital Chemistry Portfolio (CHEM501)
 
 # Project Overview
 
