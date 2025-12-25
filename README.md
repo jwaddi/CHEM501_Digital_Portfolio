@@ -18,7 +18,7 @@ This repository contains:
 
 The dashboard is designed to be robust, reproducible, and extendable, following best practice in scientific data workflows.
 
-# Motivation
+## Motivation
 
 Indoor air quality (IAQ) is a critical factor in student productivity and long-term health, yet study spaces like library pods are often poorly ventilated. The primary motivation for this project is to quantify how quickly air quality degrades in enclosed study environments. By monitoring CO2 and VOC levels in real-time, we aim to identify the specific "tipping points" where air becomes stagnant, providing data-driven evidence for how long a student should safely occupy a pod before requiring a ventilation break.
 
