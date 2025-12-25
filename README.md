@@ -108,9 +108,7 @@ Follow these steps to configure the hardware and start the logging process:
 
 * **Configure Credentials**: Open `arduino_secrets.h` and enter your WiFi and MQTT broker details. These credentials are required for the MKR WiFi 1010 to connect to the network.
 * **Upload Firmware**: Use the Arduino IDE to upload `Nicla_Sense_ME_Sensor_Reader.ino` to the Arduino Nicla Sense ME and `MKR_WiFi_Data_Transmitter.ino` to the Arduino MKR WiFi 1010.
-* **Start Data Logging**: Once the boards are connected and powered, run the `Stuffy_Study_Data_Logger.py` script to begin recording data to the dashboard files:
-```bash
-python Stuffy_Study_Data_Logger.py
+* **Start Data Logging**: Once the boards are connected and powered, run the `Stuffy_Study_Data_Logger.py` script to begin recording data to the dashboard files.
 
 # Streamlit Dashboard
 This repository contains a modular Streamlit dashboard development for **The Stuffy Study**. 
