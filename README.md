@@ -28,7 +28,7 @@ Step 1: Copy the Repository URL:
 Step 2: Open your terminal (or Git Bash on Windows). 
 
 Step 3: Navigate to the directory where you want to save the project. 
-Example: cd Documents
+Example: `cd Documents`
 
 Step 4: Run the following command to clone the repository:
 ```bash
