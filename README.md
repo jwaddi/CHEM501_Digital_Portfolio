@@ -6,9 +6,9 @@ The Stuffy Study investigates the ventilation and learning environment in studen
 
 This repository contains:
 
-* arduino code for data aquisition, including wireless transmission using mqtt
+* Arduino code for data acquisition, including wireless transmission using MQTT
 
-* python architecture, which connects the project's cloud data stream, buffer incoming sensor readings from the MKR WiFi 1010, displays live metrics to the console and persists the full dataset to both a session-specific CSV file and a master SQL database. 
+* Python architecture, which connects the project's cloud data stream, buffers incoming sensor readings from the MKR WiFi 1010, displays live metrics to the console and persists the full dataset to both a session-specific CSV file and a master SQL database. 
 
 * a Streamlit dashboard for data exploration, cleaning, visualisation, and reporting
 
